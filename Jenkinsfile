@@ -16,7 +16,7 @@ pipeline {
                 echo sh(script: 'env|sort', returnStdout: true)
 
                 sh  '''
-                    ./deploy/jenkins/deploy.sh          
+                    ./deploy/jenkins/deploy-envsubst.sh
                 '''
 
             }

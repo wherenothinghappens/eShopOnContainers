@@ -109,10 +109,16 @@ services:
       - sqldata
 
   mobileshoppingapigw:
-    image: envoyproxy/envoy:v1.11.1
+    image: ${REGISTRY:-eshop}/mobileshopping.apigw:${BRANCH_NAME:-master}
+    build:
+      context: .
+      dockerfile: ApiGateways/Envoy/Dockerfile
 
   mobilemarketingapigw:
-    image: envoyproxy/envoy:v1.11.1
+    image: ${REGISTRY:-eshop}/mobilemarketing.apigw:${BRANCH_NAME:-master}
+    build:
+      context: .
+      dockerfile: ApiGateways/Envoy/Dockerfile
 
   mobileshoppingagg:
     image: ${REGISTRY:-eshop}/mobileshoppingagg:${BRANCH_NAME:-master}
@@ -196,7 +202,13 @@ services:
       - webhooks-api
 
   webshoppingapigw:
-    image: envoyproxy/envoy:v1.11.1
+    image: ${REGISTRY:-eshop}/webshopping.apigw:${BRANCH_NAME:-master}
+    build:
+      context: .
+      dockerfile: ApiGateways/Envoy/Dockerfile
 
   webmarketingapigw:
-    image: envoyproxy/envoy:v1.11.1
+    image: ${REGISTRY:-eshop}/webmarketing.apigw:${BRANCH_NAME:-master}
+    build:
+      context: .
+      dockerfile: ApiGateways/Envoy/Dockerfile

@@ -52,6 +52,10 @@ pipeline {
                     docker push proget.valterbarbosa.com.br/e-shop-on-containers/webhooks.client:${BRANCH_NAME}
                     docker push proget.valterbarbosa.com.br/e-shop-on-containers/webhooks.api:${BRANCH_NAME}
                     docker push proget.valterbarbosa.com.br/e-shop-on-containers/webstatus:${BRANCH_NAME}
+                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/webmarketing.apigw:${BRANCH_NAME}
+                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/webshopping.apigw:${BRANCH_NAME}
+                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/mobilemarketing.apigw:${BRANCH_NAME}
+                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/mobileshopping.apigw:${BRANCH_NAME}
 
                     docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webspa:${BRANCH_NAME} eshop_webspa
                     docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/locations.api:${BRANCH_NAME} eshop_locations-api
@@ -69,7 +73,11 @@ pipeline {
                     docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webhooks.client:${BRANCH_NAME} eshop_webhooks-client
                     docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webhooks.api:${BRANCH_NAME} eshop_webhooks-api
                     docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webstatus:${BRANCH_NAME} eshop_webstatus
-               
+                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webmarketing.apigw:${BRANCH_NAME} eshop_webmarketingapigw
+                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webshopping.apigw:${BRANCH_NAME} eshop_webshoppingapigw
+                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/mobilemarketing.apigw:${BRANCH_NAME} eshop_mobilemarketingapigw
+                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/mobileshopping.apigw:${BRANCH_NAME} eshop_mobileshoppingapigw
+                    
                 '''
 
             }

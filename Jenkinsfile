@@ -37,7 +37,7 @@ pipeline {
 
                     docker push proget.valterbarbosa.com.br/docker-private-registry/eshop_on_containers:${BRANCH_NAME}
 
-                    docker service update --image proget.valterbarbosa.com.br/docker-private-registry/eShopOnContainers:${BRANCH_NAME} eshop_on_containers
+                    docker service update --image proget.valterbarbosa.com.br/docker-private-registry/eshop_on_containers:${BRANCH_NAME} eshop_on_containers
                
                 '''
 

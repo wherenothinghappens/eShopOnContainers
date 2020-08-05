@@ -28,11 +28,30 @@ services:
     volumes:
       - eshop-nosqldata:/data/db
 
+  mongo-express:
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=${ESHOP_EXTERNAL_DNS_NAME_OR_IP}
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin   
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=guest
+      - ME_CONFIG_BASICAUTH_PASSWORD=guest
+    ports:
+      - "8082:8081"
+
   basketdata:
     ports:
       - "6379:6379"
     volumes:
       - eshop-basketdata:/data
+
+  redis-commander:
+    environment:
+    - REDIS_HOSTS=${ESHOP_EXTERNAL_DNS_NAME_OR_IP}
+    - REDIS_PORT=6379
+    ports:
+    - "8081:8081"
+
   rabbitmq:
     ports:
       - "15672:15672"
@@ -379,6 +398,7 @@ services:
       - SelfUrl=http://webhooks-client/
     ports:
       - "5114:80"
+
 volumes:
   eshop-sqldata:
     external: false

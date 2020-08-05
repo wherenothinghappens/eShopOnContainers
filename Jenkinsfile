@@ -18,7 +18,9 @@ pipeline {
                 // docker stack deploy --compose-file ./docker-compose.yml -c ./docker-compose.prod.yml -c ./docker-compose.override.yml eshop
 
                 sh  '''
-                    cd ./src && docker-compose -f ./docker-compose.yml -f ./docker-compose.override.yml -f ./docker-compose.prod.yml build 
+                    cd ./src 
+                    cat .env
+                    docker-compose -f ./docker-compose.yml -f ./docker-compose.override.yml -f ./docker-compose.prod.yml build 
                 '''
 
             }

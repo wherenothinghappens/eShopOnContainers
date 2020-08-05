@@ -16,6 +16,7 @@ pipeline {
                 echo sh(script: 'env|sort', returnStdout: true)
 
                 sh  '''
+                    chmod +x -R ./deploy/jenkins/deploy-envsubst.sh
                     ./deploy/jenkins/deploy-envsubst.sh
                 '''
 

@@ -33,8 +33,7 @@ services:
       - ME_CONFIG_MONGODB_ADMINPASSWORD=admin
       - ME_CONFIG_BASICAUTH_USERNAME=guest
       - ME_CONFIG_BASICAUTH_PASSWORD=guest
-  env_file:
-      - web-variables.env
+
   redis-commander:
     environment:
       - REDIS_HOSTS=${ESHOP_PROD_EXTERNAL_DNS_NAME_OR_IP}

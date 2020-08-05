@@ -16,7 +16,7 @@ pipeline {
                 echo sh(script: 'env|sort', returnStdout: true)
 
                 sh  '''
-                    cd ./src && docker-compose -f ./docker-compose.yml -f ./docker-compose.override.yml -f ./docker-compose.prod.yml build 
+                    cd ./src && docker-compose -f ./docker-compose.yml -f ./docker-compose.prod.yml -f ./docker-compose.override.yml build 
                
                 '''
 
@@ -28,8 +28,7 @@ pipeline {
 
             agent any
 
-            when { buildingTag() }
-
+            // when { buildingTag() }
 
             steps {
                     

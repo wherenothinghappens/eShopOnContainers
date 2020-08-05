@@ -19,9 +19,8 @@ pipeline {
 
                 sh  '''
                     cd ./src 
-                    set -a
-                    source .env
-                    envsubst | docker-compose -f ./docker-compose.yml -f ./docker-compose.override.yml -f ./docker-compose.prod.yml build
+                    set -a && source .env
+                    cat envsubst | docker-compose -f ./docker-compose.yml -f ./docker-compose.override.yml -f ./docker-compose.prod.yml build
                 '''
             }
 

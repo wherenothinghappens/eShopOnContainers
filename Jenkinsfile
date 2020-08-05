@@ -28,7 +28,7 @@ pipeline {
 
             agent any
 
-            // when { buildingTag() }
+            when { buildingTag() }
 
             steps {
                     

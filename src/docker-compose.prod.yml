@@ -15,6 +15,14 @@ version: '3.4'
 
 services:
 
+  mongo-express:
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=${ESHOP_PROD_EXTERNAL_DNS_NAME_OR_IP}
+
+  redis-commander:
+    environment:
+      - REDIS_HOSTS=${ESHOP_PROD_EXTERNAL_DNS_NAME_OR_IP}
+
   basket-api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development

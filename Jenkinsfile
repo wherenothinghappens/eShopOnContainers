@@ -17,6 +17,7 @@ pipeline {
 
                 sh  '''
                     chmod +x -R ./deploy/jenkins/deploy-envsubst.sh
+                    cd ./src
                     ./deploy/jenkins/deploy-envsubst.sh
                 '''
 

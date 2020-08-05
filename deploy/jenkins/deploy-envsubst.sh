@@ -2,8 +2,6 @@
 
 # avoid to use env_file=.env in every service in docker-compose
 
-cd ../../src/
-
 set -a
 source .env
 

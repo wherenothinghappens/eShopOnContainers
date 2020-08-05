@@ -16,7 +16,7 @@ pipeline {
                 echo sh(script: 'env|sort', returnStdout: true)
 
                 sh  '''
-                    cd ./src && docker-compose -f ./compose.override.yml build
+                    cd ./src && docker-compose -f ./docker-compose.yml -f ./docker-compose.override.yml build 
                
                 '''
 

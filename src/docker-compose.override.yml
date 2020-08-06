@@ -41,9 +41,9 @@ services:
       - "15672:15672"
       - "5672:5672"
     environment:
-      RABBITMQ_DEFAULT_USER: logUser
-      RABBITMQ_DEFAULT_PASS: logPwd
-      # RABBITMQ_DEFAULT_VHOST: EnterpriseLog
+      RABBITMQ_DEFAULT_USER: ${ESHOP_SERVICE_BUS_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${ESHOP_SERVICE_BUS_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ${ESHOP_SERVICE_BUS_VHOST}
 
   identity-api:
     environment:

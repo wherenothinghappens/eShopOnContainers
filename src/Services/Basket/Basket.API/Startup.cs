@@ -213,7 +213,7 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API
             ConfigureAuth(app);
 
             app.UseStaticFiles();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<BasketService>();
@@ -255,22 +255,22 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API
 
         private void ConfigureAuthService(IServiceCollection services)
         {
-             // prevent from mapping "sub" claim to nameidentifier.
-             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
+            // prevent from mapping "sub" claim to nameidentifier.
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
 
-             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
+            var identityUrl = Configuration.GetValue<string>("IdentityUrl");
 
-             services.AddAuthentication(options =>
-             {
-                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
-             }).AddJwtBearer(options =>
-             {
-                 options.Authority = identityUrl;
-                 options.RequireHttpsMetadata = false;
-                 options.Audience = "basket";
-             });
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = identityUrl;
+                options.RequireHttpsMetadata = false;
+                options.Audience = "basket";
+            });
         }
 
         protected virtual void ConfigureAuth(IApplicationBuilder app)
@@ -362,7 +362,7 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API
             {
                 hcBuilder
                     .AddRabbitMQ(
-                        $"amqp://{configuration["EventBusConnection"]}",
+                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672,
                         name: "basket-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }

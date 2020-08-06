@@ -163,7 +163,7 @@
             {
                 app.UsePathBase(pathBase);
             }
-            
+
             app.UseRouting();
             app.UseCors("CorsPolicy");
             ConfigureAuth(app);
@@ -351,7 +351,7 @@
             {
                 hcBuilder
                     .AddRabbitMQ(
-                        $"amqp://{configuration["EventBusConnection"]}",
+                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672,
                         name: "marketing-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }

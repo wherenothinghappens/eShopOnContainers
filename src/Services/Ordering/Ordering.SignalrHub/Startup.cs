@@ -109,7 +109,7 @@ namespace Ordering.SignalrHub
             RegisterEventBus(services);
 
             services.AddOptions();
-            
+
             //configure autofac
             var container = new ContainerBuilder();
             container.RegisterModule(new ApplicationModule());
@@ -133,7 +133,7 @@ namespace Ordering.SignalrHub
                 loggerFactory.CreateLogger<Startup>().LogDebug("Using PATH BASE '{pathBase}'", pathBase);
                 app.UsePathBase(pathBase);
             }
-            
+
             app.UseRouting();
             app.UseCors("CorsPolicy");
             app.UseAuthentication();
@@ -249,7 +249,7 @@ namespace Ordering.SignalrHub
             {
                 hcBuilder
                     .AddRabbitMQ(
-                        $"amqp://{configuration["EventBusConnection"]}",
+                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672,
                         name: "signalr-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }

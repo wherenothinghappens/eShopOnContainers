@@ -2,30 +2,57 @@ version: '3.4'
 
 services:
 
+  # rabbitmq:
+  #   container_name: RabbitMQ
+  #   image: rabbitmq:3-management-alpine
+  #   volumes:
+  #     - mq_data:/var/lib/rabbitmq/mnesia
+  #   ports:
+  #     - "15672:15672"
+  #     - "5672:5672" 
+  #   networks:
+  #     - log
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: logUser
+  #     RABBITMQ_DEFAULT_PASS: logPwd
+  #     RABBITMQ_DEFAULT_VHOST: EnterpriseLog
+
   elasticsearch:
     build:
       context: elk/elasticsearch/
     volumes:
       - ./elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - elasticsearch_data:/usr/share/elasticsearch/data      
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m" #-Xms512m -Xmx512m
+    healthcheck:
+      test: ["CMD-SHELL", "curl -I -s -L http://localhost:9200 || exit 1"]
+      interval: 30s
+      timeout: 20s
+      retries: 5     
+    networks:
+      - log
+      
   logstash:
     build:
       context: elk/logstash/
     volumes:
       - ./elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - /docker/proxy/logs/:/tmp/nginx/ #LOCAL PATH NGINX LOGS
+    command: logstash -f /usr/share/logstash/pipeline/logstash.conf 
     ports:
       - "8080:8080"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     depends_on:
       - elasticsearch
-
+    networks:
+      - log  
+      
   kibana:
     build:
       context: elk/kibana/
@@ -35,3 +62,44 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+    healthcheck:
+      test: ["CMD-SHELL", "curl -I -s -L http://localhost:5601/ || exit 1"]
+      interval: 30s
+      timeout: 20s
+      retries: 5     
+    networks:
+      - log
+
+  metricbeat:
+    build: 
+      context: elk/metricbeat
+    user: root
+    volumes:      
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - elasticsearch
+      - kibana
+    restart: on-failure
+    networks:
+      - log
+      
+  elastichq:
+    container_name: elastichq
+    image: elastichq/elasticsearch-hq
+    environment:
+      - HQ_DEFAULT_URL=http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5000:5000"
+    restart: on-failure
+    networks:
+      - log
+
+volumes:
+  elasticsearch_data:
+  # mq_data:
+
+networks:
+  log:
+    external: true

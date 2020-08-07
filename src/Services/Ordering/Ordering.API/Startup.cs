@@ -220,7 +220,7 @@
             {
                 hcBuilder
                     .AddRabbitMQ(
-                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672,
+                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672",
                         name: "ordering-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }

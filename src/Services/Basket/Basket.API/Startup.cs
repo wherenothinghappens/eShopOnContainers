@@ -362,7 +362,7 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API
             {
                 hcBuilder
                     .AddRabbitMQ(
-                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672,
+                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672",
                         name: "basket-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }

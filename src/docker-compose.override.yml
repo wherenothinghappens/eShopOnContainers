@@ -64,7 +64,8 @@ services:
       - UseCustomizationData=True
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5105:80"
 
@@ -85,7 +86,8 @@ services:
       - PATH_BASE=/basket-api
       - GRPC_PORT=81
       - PORT=80
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5103:80"
       - "9103:81"
@@ -108,7 +110,8 @@ services:
       - GRPC_PORT=81
       - PORT=80
       - PATH_BASE=/catalog-api
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5101:80"
       - "9101:81"
@@ -129,7 +132,7 @@ services:
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
       - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
       - Serilog__MinimumLevel__Override__ordering-api=Verbose
       - PATH_BASE=/ordering-api
@@ -155,7 +158,7 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
       - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5111:80"
 
@@ -181,7 +184,8 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
       - PATH_BASE=/marketing-api
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5110:80"
 
@@ -197,7 +201,8 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - Serilog__MinimumLevel__Override__payment-api.IntegrationEvents.EventHandling=Verbose
       - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5108:80"
 
@@ -217,7 +222,8 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
       - PATH_BASE=/locations-api
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5109:80"
 
@@ -231,7 +237,8 @@ services:
       - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - IdentityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5113:80"
 
@@ -316,7 +323,8 @@ services:
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - identityUrl=http://identity-api
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5112:80"
 
@@ -352,7 +360,8 @@ services:
       - HealthChecksUI__HealthChecks__12__Uri=http://ordering-backgroundtasks/hc
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5107:80"
 
@@ -368,7 +377,8 @@ services:
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - SignalrHubUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5202
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5104:80"
 
@@ -385,7 +395,8 @@ services:
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5100:80"
 
@@ -397,7 +408,8 @@ services:
       - CallBackUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5114
       - WebhooksUrl=http://webhooks-api
       - SelfUrl=http://webhooks-client/
-      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP} 
     ports:
       - "5114:80"
 volumes:

@@ -301,7 +301,7 @@ namespace Microsoft.eShopOnContainers.Services.Locations.API
             {
                 hcBuilder
                     .AddRabbitMQ(
-                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672,
+                        $"amqp://{configuration["EventBusUserName"]}:{configuration["EventBusPassword"]}@{configuration["EventBusConnection"]}:5672",
                         name: "locations-rabbitmqbus-check",
                         tags: new string[] { "rabbitmqbus" });
             }

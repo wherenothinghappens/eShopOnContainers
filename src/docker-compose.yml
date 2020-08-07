@@ -11,8 +11,18 @@ services:
   nosqldata:
     image: mongo
 
+  mongo-express:
+    image: mongo-express:latest
+    depends_on:
+      - nosqldata
+
   basketdata:
     image: redis:alpine
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    depends_on:
+      - basketdata
 
   rabbitmq:
     image: rabbitmq:3-management-alpine

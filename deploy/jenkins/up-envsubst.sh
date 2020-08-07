@@ -24,11 +24,14 @@ rm -rf docker-compose.env.yml docker-compose.override.env.yml docker-compose.pro
 
 # 1 - up namespace eshop
 
-# 2 - docker service update --network-add enterprise_application_log_log eshop_rabbitmq
+# 2 - put eshop_rabbitmq on Enterprise Applicatio Log network
 docker service update --network-add enterprise_application_log_log eshop_rabbitmq
 
-# 3 - create vHost EnterpriseLog
+# 3 - put enterprise_application_log_logstash on eshop_default network
+docker service update --network-add eshop_default enterprise_application_log_logstash
 
-# 4 - update payment-api
+# 4 - create vHost EnterpriseLog
 
-# 5 - update logstash
+# 5 - update payment-api
+
+# 6 - update logstash

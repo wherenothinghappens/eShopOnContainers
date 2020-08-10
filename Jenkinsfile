@@ -35,50 +35,50 @@ pipeline {
                     
                 sh  '''
 
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/webspa:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/locations.api:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/webmvc:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/webshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/ordering.signalrhub:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/mobileshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/marketing.api:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/basket.api:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/payment.api:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/catalog.api:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/identity.api:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/ordering.api:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/ordering.backgroundtasks:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/webhooks.client:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/webhooks.api:${PLATFORM:-linux}-${TAG:-latest}
-                    docker push proget.valterbarbosa.com.br/e-shop-on-containers/webstatus:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/webspa:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/locations.api:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/webmvc:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/webshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/ordering.signalrhub:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/mobileshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/marketing.api:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/basket.api:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/payment.api:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/catalog.api:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/identity.api:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/ordering.api:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/ordering.backgroundtasks:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/webhooks.client:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/webhooks.api:${PLATFORM:-linux}-${TAG:-latest}
+                    docker push ${REGISTRY}/webstatus:${PLATFORM:-linux}-${TAG:-latest}
 
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webspa:${PLATFORM:-linux}-${TAG:-latest} eshop_webspa
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/locations.api:${PLATFORM:-linux}-${TAG:-latest} eshop_locations-api
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webmvc:${PLATFORM:-linux}-${TAG:-latest} eshop_webmvc
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webshoppingagg:${PLATFORM:-linux}-${TAG:-latest} eshop_webshoppingagg
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/ordering.signalrhub:${PLATFORM:-linux}-${TAG:-latest} eshop_ordering-signalrhub
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/mobileshoppingagg:${PLATFORM:-linux}-${TAG:-latest} eshop_mobileshoppingagg
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/marketing.api:${PLATFORM:-linux}-${TAG:-latest} eshop_marketing-api
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/basket.api:${PLATFORM:-linux}-${TAG:-latest} eshop_basket-api
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/payment.api:${PLATFORM:-linux}-${TAG:-latest} eshop_payment-api
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/catalog.api:${PLATFORM:-linux}-${TAG:-latest} eshop_catalog-api
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/identity.api:${PLATFORM:-linux}-${TAG:-latest} eshop_identity-api
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/ordering.api:${PLATFORM:-linux}-${TAG:-latest} eshop_ordering-api
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/ordering.backgroundtasks:${PLATFORM:-linux}-${TAG:-latest} eshop_ordering-backgroundtasks
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webhooks.client:${PLATFORM:-linux}-${TAG:-latest} eshop_webhooks-client
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webhooks.api:${PLATFORM:-linux}-${TAG:-latest} eshop_webhooks-api
-                    docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webstatus:${PLATFORM:-linux}-${TAG:-latest} eshop_webstatus
+                    docker service update --image ${REGISTRY}/webspa:${PLATFORM:-linux}-${TAG:-latest} eshop_webspa
+                    docker service update --image ${REGISTRY}/locations.api:${PLATFORM:-linux}-${TAG:-latest} eshop_locations-api
+                    docker service update --image ${REGISTRY}/webmvc:${PLATFORM:-linux}-${TAG:-latest} eshop_webmvc
+                    docker service update --image ${REGISTRY}/webshoppingagg:${PLATFORM:-linux}-${TAG:-latest} eshop_webshoppingagg
+                    docker service update --image ${REGISTRY}/ordering.signalrhub:${PLATFORM:-linux}-${TAG:-latest} eshop_ordering-signalrhub
+                    docker service update --image ${REGISTRY}/mobileshoppingagg:${PLATFORM:-linux}-${TAG:-latest} eshop_mobileshoppingagg
+                    docker service update --image ${REGISTRY}/marketing.api:${PLATFORM:-linux}-${TAG:-latest} eshop_marketing-api
+                    docker service update --image ${REGISTRY}/basket.api:${PLATFORM:-linux}-${TAG:-latest} eshop_basket-api
+                    docker service update --image ${REGISTRY}/payment.api:${PLATFORM:-linux}-${TAG:-latest} eshop_payment-api
+                    docker service update --image ${REGISTRY}/catalog.api:${PLATFORM:-linux}-${TAG:-latest} eshop_catalog-api
+                    docker service update --image ${REGISTRY}/identity.api:${PLATFORM:-linux}-${TAG:-latest} eshop_identity-api
+                    docker service update --image ${REGISTRY}/ordering.api:${PLATFORM:-linux}-${TAG:-latest} eshop_ordering-api
+                    docker service update --image ${REGISTRY}/ordering.backgroundtasks:${PLATFORM:-linux}-${TAG:-latest} eshop_ordering-backgroundtasks
+                    docker service update --image ${REGISTRY}/webhooks.client:${PLATFORM:-linux}-${TAG:-latest} eshop_webhooks-client
+                    docker service update --image ${REGISTRY}/webhooks.api:${PLATFORM:-linux}-${TAG:-latest} eshop_webhooks-api
+                    docker service update --image ${REGISTRY}/webstatus:${PLATFORM:-linux}-${TAG:-latest} eshop_webstatus
                    
                 '''
-                    // docker push proget.valterbarbosa.com.br/e-shop-on-containers/webmarketing.apigw:${PLATFORM:-linux}-${TAG:-latest}
-                    // docker push proget.valterbarbosa.com.br/e-shop-on-containers/webshopping.apigw:${PLATFORM:-linux}-${TAG:-latest}
-                    // docker push proget.valterbarbosa.com.br/e-shop-on-containers/mobilemarketing.apigw:${PLATFORM:-linux}-${TAG:-latest}
-                    // docker push proget.valterbarbosa.com.br/e-shop-on-containers/mobileshopping.apigw:${PLATFORM:-linux}-${TAG:-latest}
+                    // docker push ${REGISTRY}/webmarketing.apigw:${PLATFORM:-linux}-${TAG:-latest}
+                    // docker push ${REGISTRY}/webshopping.apigw:${PLATFORM:-linux}-${TAG:-latest}
+                    // docker push ${REGISTRY}/mobilemarketing.apigw:${PLATFORM:-linux}-${TAG:-latest}
+                    // docker push ${REGISTRY}/mobileshopping.apigw:${PLATFORM:-linux}-${TAG:-latest}
 
-                    // docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webmarketing.apigw:${PLATFORM:-linux}-${TAG:-latest} eshop_webmarketingapigw
-                    // docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/webshopping.apigw:${PLATFORM:-linux}-${TAG:-latest} eshop_webshoppingapigw
-                    // docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/mobilemarketing.apigw:${PLATFORM:-linux}-${TAG:-latest} eshop_mobilemarketingapigw
-                    // docker service update --image proget.valterbarbosa.com.br/e-shop-on-containers/mobileshopping.apigw:${PLATFORM:-linux}-${TAG:-latest} eshop_mobileshoppingapigw
+                    // docker service update --image ${REGISTRY}/webmarketing.apigw:${PLATFORM:-linux}-${TAG:-latest} eshop_webmarketingapigw
+                    // docker service update --image ${REGISTRY}/webshopping.apigw:${PLATFORM:-linux}-${TAG:-latest} eshop_webshoppingapigw
+                    // docker service update --image ${REGISTRY}/mobilemarketing.apigw:${PLATFORM:-linux}-${TAG:-latest} eshop_mobilemarketingapigw
+                    // docker service update --image ${REGISTRY}/mobileshopping.apigw:${PLATFORM:-linux}-${TAG:-latest} eshop_mobileshoppingapigw
                     
 
             }

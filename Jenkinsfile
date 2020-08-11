@@ -4,9 +4,84 @@ pipeline {
 
     environment {
         COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
+        REGISTRY = "proget.valterbarbosa.com.br/e-shop-on-containers"
     }
+
     stages {
+
+        stage('Build-Solution') {
+
+            agent {
+                dockerfile {
+                    // alwaysPull false
+                    // image 'microsoft/dotnet:2.2-sdk'
+                    // reuseNode false
+                    args '-u root:root'
+                }
+            }
+
+            steps {
+                
+                echo sh(script: 'env|sort', returnStdout: true)
+
+                sh 'dotnet build ./src/eShopOnContainers-ServicesAndWebApps.sln'
+
+            }
+
+        }
+
       
+        stage('Test') {
+
+            agent {
+                dockerfile {
+                    // alwaysPull false
+                    // image 'microsoft/dotnet:2.2-sdk'
+                    // reuseNode false
+                    args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
+
+            steps {
+
+                 withCredentials([usernamePassword(credentialsId: 'SonarQube', passwordVariable: 'SONARQUBE_KEY', usernameVariable: 'DUMMY' )]) {
+
+                    dir('./src/') {
+
+                        sh  '''
+                            #docker-compose up -d
+                            
+                            #sleep 190
+
+                            export PATH="$PATH:/root/.dotnet/tools"
+                            
+                            dotnet test ./Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj \
+                                --configuration Debug \
+                                --output ../output-tests  \
+                                /p:CollectCoverage=true \
+                                /p:CoverletOutputFormat=opencover \
+                                /p:CoverletOutput='/output-coverage/coverage.xml' \
+                                /p:Exclude="[*.Tests]*"
+
+                            dotnet sonarscanner begin /k:"Basket-Service" \
+                                /d:sonar.host.url="http://sonarqube.valterbarbosa.com.br" \
+                                /d:sonar.login="$SONARQUBE_KEY" \
+                                /d:sonar.cs.opencover.reportsPaths="/output-coverage/coverage.xml" \
+                                /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
+                                /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
+                                /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
+                            
+                            dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
+                            dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
+                            '''
+                    }
+
+                }
+                
+            }
+
+        }
+
         stage('Build') {
 
             agent any
@@ -15,11 +90,11 @@ pipeline {
                 
                 echo sh(script: 'env|sort', returnStdout: true)
 
-                sh  '''
-                    chmod +x -R ./deploy/jenkins/deploy-envsubst.sh
-                    cd ./src
-                    ../deploy/jenkins/deploy-envsubst.sh
-                '''
+                sh  'chmod +x -R ./deploy/jenkins/deploy-envsubst.sh'
+
+                dir('./src/') {
+                    sh '../deploy/jenkins/deploy-envsubst.sh'
+                }
 
             }
 
@@ -88,6 +163,7 @@ pipeline {
 
  
     }
+    
     post {
 
         always {

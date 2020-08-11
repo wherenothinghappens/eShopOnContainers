@@ -63,7 +63,7 @@ pipeline {
                     sh  'export PATH="$PATH:/root/.dotnet/tools"'
 
                     for (int i = 0; i < projetcs.size(); ++i) {
-                        sh "
+                        sh """
                             dotnet test ${projetcs[i]} \
                                 --configuration Debug \
                                 --output ../output-tests  \
@@ -71,7 +71,7 @@ pipeline {
                                 /p:CoverletOutputFormat=opencover \
                                 /p:CoverletOutput='/output-coverage/coverage.xml' \
                                 /p:Exclude="[*.Tests]*"
-                        "
+                        """
                     }
 
                     sh  '''

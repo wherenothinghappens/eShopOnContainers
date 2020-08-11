@@ -48,32 +48,51 @@ pipeline {
 
                     dir('./src/') {
 
-                        sh  '''
-                            #docker-compose up -d
-                            
-                            #sleep 190
+                    def projetcs = [
+                        './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
+                        './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
+                        './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
+                        // './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
+                        // './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
+                        // './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
+                        // './Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
+                        // './Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
+                        // './Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
+                    ]
 
-                            export PATH="$PATH:/root/.dotnet/tools"
-                            
-                            dotnet test ./Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj \
+                    sh  'export PATH="$PATH:/root/.dotnet/tools"'
+
+                    for (int i = 0; i < projetcs.size(); ++i) {
+                        sh "
+                            dotnet test ${projetcs[i]} \
                                 --configuration Debug \
                                 --output ../output-tests  \
                                 /p:CollectCoverage=true \
                                 /p:CoverletOutputFormat=opencover \
                                 /p:CoverletOutput='/output-coverage/coverage.xml' \
                                 /p:Exclude="[*.Tests]*"
+                        "
+                    }
 
-                            dotnet sonarscanner begin /k:"Basket-Service" \
-                                /d:sonar.host.url="http://sonarqube.valterbarbosa.com.br" \
-                                /d:sonar.login="$SONARQUBE_KEY" \
-                                /d:sonar.cs.opencover.reportsPaths="/output-coverage/coverage.xml" \
-                                /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
-                                /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
-                                /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
-                            
-                            dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
-                            dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
-                            '''
+                    sh  '''
+                        #docker-compose up -d
+                        
+                        #sleep 190
+
+                        export PATH="$PATH:/root/.dotnet/tools"
+                        
+                        dotnet sonarscanner begin /k:"eShop-Basket-Service" \
+                            /d:sonar.host.url="http://sonarqube.valterbarbosa.com.br" \
+                            /d:sonar.login="$SONARQUBE_KEY" \
+                            /d:sonar.cs.opencover.reportsPaths="/output-coverage/coverage.xml" \
+                            /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
+                            /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
+                            /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
+                        
+                        dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
+                        
+                        dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
+                        '''
                     }
 
                 }

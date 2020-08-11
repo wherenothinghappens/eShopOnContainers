@@ -9,26 +9,26 @@ pipeline {
 
     stages {
 
-        stage('Build-Solution') {
+        // stage('Build-Solution') {
 
-            agent {
-                dockerfile {
-                    // alwaysPull false
-                    // image 'microsoft/dotnet:2.2-sdk'
-                    // reuseNode false
-                    args '-u root:root'
-                }
-            }
+        //     agent {
+        //         dockerfile {
+        //             // alwaysPull false
+        //             // image 'microsoft/dotnet:2.2-sdk'
+        //             // reuseNode false
+        //             args '-u root:root'
+        //         }
+        //     }
 
-            steps {
+        //     steps {
                 
-                echo sh(script: 'env|sort', returnStdout: true)
+        //         echo sh(script: 'env|sort', returnStdout: true)
 
-                sh 'dotnet build ./src/eShopOnContainers-ServicesAndWebApps.sln'
+        //         sh 'dotnet build ./src/eShopOnContainers-ServicesAndWebApps.sln'
 
-            }
+        //     }
 
-        }
+        // }
 
       
         stage('Test') {

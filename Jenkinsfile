@@ -31,12 +31,12 @@ pipeline {
                             './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
                             './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
                             './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
-                            './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
-                            './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
-                            './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
-                            './Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
-                            './Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
-                            './Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
+                            //'./Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
+                            //'./Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
+                            //'./Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
+                            //'./Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
+                            //'./Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
+                            //'./Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
                         ]
 
                         for (int i = 0; i < projetcs.size(); ++i) {

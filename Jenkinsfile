@@ -15,9 +15,8 @@ pipeline {
             agent {
 
                 dockerfile {
-                    // alwaysPull false
-                    // reuseNode true
-                    args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
+                    image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
+                    args '-u root:root'
                 }
             }
 
@@ -60,8 +59,6 @@ pipeline {
 
             agent {
                 dockerfile {
-                    // alwaysPull false
-                    // reuseNode true
                     args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }

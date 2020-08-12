@@ -16,7 +16,7 @@ pipeline {
 
                 docker {
                     image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-                    args '-u jenkins:jenkins'
+                    args '-u root:root'
                 }
             }
 
@@ -62,6 +62,12 @@ pipeline {
                 //             skipNoTestFiles: false,
                 //             stopProcessingIfError: true)
                 //     ])
+                // xunit (
+                //     testTimeMargin: '3000',
+                //     thresholdMode: 1,
+                //     thresholds: [$class: 'FailedThreshold', unstableThreshold: '1'],
+                //     tools: [$class: 'MSTest', pattern: '*.trx']
+                // )
                 always {
                     step([
                         $class: 'MSTestPublisher', 

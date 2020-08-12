@@ -15,8 +15,8 @@ pipeline {
             agent {
 
                 dockerfile {
-                    alwaysPull false
-                    reuseNode true
+                    // alwaysPull false
+                    // reuseNode true
                     args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
@@ -60,8 +60,8 @@ pipeline {
 
             agent {
                 dockerfile {
-                    alwaysPull false
-                    reuseNode true
+                    // alwaysPull false
+                    // reuseNode true
                     args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }

@@ -53,8 +53,8 @@ pipeline {
                         script {
                             def projetcs = [
                                 './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
-                                './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
-                                './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
+                                //'./Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
+                                //'./Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
                                 // './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
                                 // './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
                                 // './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
@@ -91,10 +91,11 @@ pipeline {
                                 /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
                                 /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
                             
-                            dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
+                            dotnet build ./Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj
                             
                             dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
                             '''
+                            //dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
                     
                     }
 

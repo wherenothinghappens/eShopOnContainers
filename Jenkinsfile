@@ -16,7 +16,7 @@ pipeline {
 
                 docker {
                     image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-                    args '-u root:root'
+                    args '-u jenkins:jenkins'
                 }
             }
 
@@ -27,9 +27,9 @@ pipeline {
                     script {
 
                         def projetcs = [
-                            './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
+                            //'./Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
                             './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
-                            './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
+                            //'./Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
                             //'./Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
                             //'./Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
                             //'./Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
@@ -39,17 +39,36 @@ pipeline {
                         ]
 
                         for (int i = 0; i < projetcs.size(); ++i) {
+
                             sh """
                                 dotnet test ${projetcs[i]} \
+                                    --logger 'trx' \
                                     --configuration Debug \
                                     --output ../output-tests  \
                                     /p:CollectCoverage=true \
                                     /p:CoverletOutputFormat=opencover \
-                                    /p:CoverletOutput='/output-coverage/coverage.xml' \
+                                    /p:CoverletOutput='/output-coverage/${i}.coverage.xml' \
                                     /p:Exclude="[*.Tests]*"
+
                             """
                         }
                     }
+                }
+            }
+            post {
+                // xunit(
+                //     [MSTest(deleteOutputFiles: true,
+                //             failIfNotNew: true,
+                //             pattern: '*.trx',
+                //             skipNoTestFiles: false,
+                //             stopProcessingIfError: true)
+                //     ])
+                always {
+                    step([
+                        $class: 'MSTestPublisher', 
+                        testResultsFile:"**/TestResults/*.trx", 
+                        failOnError: true, 
+                        keepLongStdio: true])
                 }
             }
 
@@ -80,7 +99,7 @@ pipeline {
                             dotnet sonarscanner begin /k:"eShop-On-Containers" \
                                 /d:sonar.host.url="$SONARQUBE_URL" \
                                 /d:sonar.login="$SONARQUBE_KEY" \
-                                /d:sonar.cs.opencover.reportsPaths="/output-coverage/coverage.xml" \
+                                /d:sonar.cs.opencover.reportsPaths="/output-coverage/*.xml" \
                                 /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
                                 /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
                                 /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"

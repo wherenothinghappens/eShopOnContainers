@@ -14,7 +14,7 @@ pipeline {
 
             agent {
 
-                dockerfile {
+                docker {
                     image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
                     args '-u root:root'
                 }

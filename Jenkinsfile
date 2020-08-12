@@ -27,9 +27,9 @@ pipeline {
                     script {
 
                         def projetcs = [
-                            //'./Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
+                            './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
                             './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
-                            //'./Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
+                            './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
                             //'./Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
                             //'./Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
                             //'./Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
@@ -49,7 +49,6 @@ pipeline {
                                     /p:CoverletOutputFormat=opencover \
                                     /p:CoverletOutput='/output-coverage/${i}.coverage.xml' \
                                     /p:Exclude="[*.Tests]*"
-
                             """
                         }
                     }

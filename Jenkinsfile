@@ -42,7 +42,7 @@ pipeline {
 
                             sh """
                                 dotnet test ${projetcs[i]} \
-                                    --logger 'trx' \
+                                    --logger 'trx;LogFileName=log_${i}.trx' \
                                     --configuration Debug \
                                     --output ../output-tests  \
                                     /p:CollectCoverage=true \
@@ -69,7 +69,7 @@ pipeline {
                 //     tools: [$class: 'MSTest', pattern: '*.trx']
                 // )
                 always {
-                    sh 'chown -R jenkins:jenkins .' //docker create folders as root
+                    sh 'sudo chown -R jenkins:jenkins .' //docker create folders as root
                     step([
                         $class: 'MSTestPublisher', 
                         testResultsFile:"**/TestResults/*.trx", 

@@ -70,29 +70,36 @@ pipeline {
                 }
             }
             post {
-                // xunit (
-                //     testTimeMargin: '3000',
-                //     thresholdMode: 1,
-                //     thresholds: [$class: 'FailedThreshold', unstableThreshold: '1'],
-                //     tools: [$class: 'MSTest', pattern: '*.trx']
-                // )
+
                 always {
 
-                    // sh 'chown -R jenkins:root ${WORKSPACE}'
+                    // trx is INVALID FORMAT
+                    // xunit (
+                    //     thresholds: [ skipped(failureThreshold: '0'), failed(failureThreshold: '0') ],
+                    //     tools: [ BoostTest(pattern: '**/TestResults/*.trx') ]
+                    // )
 
-                    xunit(
-                        [MSTest(deleteOutputFiles: true,
-                                failIfNotNew: true,
-                                pattern: '**/TestResults/*.trx',
-                                skipNoTestFiles: false,
-                                stopProcessingIfError: true)
-                        ])
+                    // xunit (
+                    //     testTimeMargin: '3000',
+                    //     thresholdMode: 1,
+                    //     thresholds: [$class: 'FailedThreshold', unstableThreshold: '1'],
+                    //     tools: [$class: 'MSTest', pattern: '*.trx']
+                    // )
 
-                    // step([
-                    //     $class: 'MSTestPublisher', 
-                    //     testResultsFile:"**/TestResults/*.trx", 
-                    //     failOnError: true, 
-                    //     keepLongStdio: true])
+                    // xunit(
+                    //     [MSTest(deleteOutputFiles: true,
+                    //             failIfNotNew: true,
+                    //             pattern: '**/TestResults/*.trx',
+                    //             skipNoTestFiles: false,
+                    //             stopProcessingIfError: true)
+                    //     ])
+
+                    sh 'chown -R jenkins:root ${WORKSPACE}'
+                    step([
+                        $class: 'MSTestPublisher', 
+                        testResultsFile:"**/TestResults/*.trx", 
+                        failOnError: true, 
+                        keepLongStdio: true])
                 }
             }
         }

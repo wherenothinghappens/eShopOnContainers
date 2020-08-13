@@ -1,11 +1,3 @@
-def projetcsTest() {
-    return [
-        './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
-        './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
-        //'./Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
-    ]
-}
-
 pipeline {
     
     agent none
@@ -14,7 +6,6 @@ pipeline {
         COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
         REGISTRY = "proget.valterbarbosa.com.br/e-shop-on-containers"
         SONARQUBE_URL = "http://sonarqube.valterbarbosa.com.br"
-        TEST_PROJECTS = projetcsTest()
     }
 
     stages {
@@ -57,9 +48,9 @@ pipeline {
                                 returnStdout: true
                             ).trim()
 
-                            echo "Gen ${PROJECT_NAME}.trx"
+                            echo "*************************** Gen ${PROJECT_NAME}.trx *********************************"
 
-                            echo "Gen ${PROJECT_NAME}.coverage.xml\n"
+                            echo "*************************** Gen ${PROJECT_NAME}.coverage.xml ************************"
                             
                             sh """
                                 dotnet test ${projetcs[i]} \
@@ -131,9 +122,9 @@ pipeline {
                                 returnStdout: true
                             ).trim()
 
-                            echo "Gen ${PROJECT_NAME}.trx"
+                            echo "*************************** Gen ${PROJECT_NAME}.trx *********************************"
 
-                            echo "Gen ${PROJECT_NAME}.coverage.xml\n"
+                            echo "*************************** Gen ${PROJECT_NAME}.coverage.xml ************************"
                             
                             sh """
                                 dotnet test ${projetcs[i]} \

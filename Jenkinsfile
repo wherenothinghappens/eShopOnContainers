@@ -10,32 +10,26 @@ pipeline {
 
     stages {
 
+        // node('docker') {
+        
+        //     stage 'Checkout'
+        //         checkout scm
+        //     stage 'Build & UnitTest'
+        //         sh "docker build -t accountownerapp:B${BUILD_NUMBER} -f Dockerfile ."
+        //         sh "docker build -t accountownerapp:test-B${BUILD_NUMBER} -f Dockerfile.Integration ."
+        
+        //     stage 'Integration Test'
+        //         sh "docker-compose -f docker-compose.integration.yml up --force-recreate --abort-on-container-exit"
+        //         sh "docker-compose -f docker-compose.integration.yml down -v"
+        // }
+
         stage('Unit Tests') {
 
             agent {
 
                 docker {
                     image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-                    args '-u root:root '
-
-
-// 1 - Executar Testes Unitarios individualmente e INTERROMPER build caso algum falhe.
-
-//     1) Exemplo de Jenkinsfile no Github
-
-//         1) Criar um Dockerfile para realizar os teste unitarios
-
-//             PROBLEMA_1: A imagem do dotnet PRECISA ser root
-//                 PROBLEMA_1.1: Ela cria os arquivos de resultado dos testes como root e o Jenkins nao consegue analisar
-
-//             2) Mapear o projeto para um VOLUME
-//             3) torcer para o jenkins continuar com as permissoes apos finalizar o processo
-//             3.1) copiar o resultado para um path ja com as permissoes necessarias...
-        
-// 2 - Executar Testes Unitarios e enviar estatisticas para o SonarQube
-//     - Executar TODOS os testes e enviar em uma UNICA chamada da SOLUTION... <- testar isso
-
-
+                    args '-u root:root -v /etc/passwd:/etc/passwd' //sh 'chown -R jenkins:root ${WORKSPACE}'
                 }
             }
 
@@ -59,6 +53,8 @@ pipeline {
 
                         for (int i = 0; i < projetcs.size(); ++i) {
 
+                            //--results-directory /TestResults/
+                            //--verbosity=normal 
                             sh """
                                 dotnet test ${projetcs[i]} \
                                     --logger 'trx;LogFileName=log_${i}.trx' \
@@ -70,35 +66,10 @@ pipeline {
                                     /p:Exclude="[*.Tests]*"
                             """
                         }
-
-                        // sh 'chown -R jenkins:jenkins ${WORKSPACE}'
-
-                        // step([
-                        //     $class: 'MSTestPublisher', 
-                        //     testResultsFile:"**/TestResults/*.trx", 
-                        //     failOnError: true, 
-                        //     keepLongStdio: true])
                     }
                 }
             }
-        }
-
-        stage('Reading Unit Tests Results') {
-
-            agent any
-
-            steps {
-                //Unit Tests agent create folders as root...
-                sh 'chown -R jenkins:jenkins ${WORKSPACE}' 
-            }
             post {
-                // xunit(
-                //     [MSTest(deleteOutputFiles: true,
-                //             failIfNotNew: true,
-                //             pattern: '*.trx',
-                //             skipNoTestFiles: false,
-                //             stopProcessingIfError: true)
-                //     ])
                 // xunit (
                 //     testTimeMargin: '3000',
                 //     thresholdMode: 1,
@@ -106,11 +77,22 @@ pipeline {
                 //     tools: [$class: 'MSTest', pattern: '*.trx']
                 // )
                 always {
-                    step([
-                        $class: 'MSTestPublisher', 
-                        testResultsFile:"**/TestResults/*.trx", 
-                        failOnError: true, 
-                        keepLongStdio: true])
+
+                    // sh 'chown -R jenkins:root ${WORKSPACE}'
+
+                    xunit(
+                        [MSTest(deleteOutputFiles: true,
+                                failIfNotNew: true,
+                                pattern: '**/TestResults/*.trx',
+                                skipNoTestFiles: false,
+                                stopProcessingIfError: true)
+                        ])
+
+                    // step([
+                    //     $class: 'MSTestPublisher', 
+                    //     testResultsFile:"**/TestResults/*.trx", 
+                    //     failOnError: true, 
+                    //     keepLongStdio: true])
                 }
             }
         }

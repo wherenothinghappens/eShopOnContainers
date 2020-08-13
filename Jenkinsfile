@@ -29,7 +29,7 @@ pipeline {
 
                 docker {
                     image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-                    args '-u root:root -v /etc/passwd:/etc/passwd' //sh 'chown -R jenkins:root ${WORKSPACE}'
+                    args '-u root:root' // -v /etc/passwd:/etc/passwd => sh 'chown -R jenkins:root ${WORKSPACE}'
                 }
             }
 
@@ -40,15 +40,15 @@ pipeline {
                     script {
 
                         def projetcs = [
-                            //'./Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
+                            './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
                             './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
-                            //'./Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
-                            //'./Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
-                            //'./Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
-                            //'./Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
-                            //'./Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
-                            //'./Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
-                            //'./Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
+                            './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
+                            './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
+                            './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
+                            './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
+                            './Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
+                            './Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
+                            './Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
                         ]
 
                         for (int i = 0; i < projetcs.size(); ++i) {
@@ -86,20 +86,20 @@ pipeline {
                     //     tools: [$class: 'MSTest', pattern: '*.trx']
                     // )
 
-                    // xunit(
-                    //     [MSTest(deleteOutputFiles: true,
-                    //             failIfNotNew: true,
-                    //             pattern: '**/TestResults/*.trx',
-                    //             skipNoTestFiles: false,
-                    //             stopProcessingIfError: true)
-                    //     ])
+                    xunit(
+                        [MSTest(deleteOutputFiles: true,
+                                failIfNotNew: true,
+                                pattern: '**/TestResults/*.trx',
+                                skipNoTestFiles: false,
+                                stopProcessingIfError: true)
+                        ])
 
-                    sh 'chown -R jenkins:root ${WORKSPACE}'
-                    step([
-                        $class: 'MSTestPublisher', 
-                        testResultsFile:"**/TestResults/*.trx", 
-                        failOnError: true, 
-                        keepLongStdio: true])
+                    // sh 'chown -R jenkins:root ${WORKSPACE}'
+                    // step([
+                    //     $class: 'MSTestPublisher', 
+                    //     testResultsFile:"**/TestResults/*.trx", 
+                    //     failOnError: true, 
+                    //     keepLongStdio: true])
                 }
             }
         }

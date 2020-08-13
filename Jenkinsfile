@@ -1,3 +1,11 @@
+def projetcsTest() {
+    return [
+        './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
+        './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
+        //'./Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
+    ]
+}
+
 pipeline {
     
     agent none
@@ -6,35 +14,27 @@ pipeline {
         COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
         REGISTRY = "proget.valterbarbosa.com.br/e-shop-on-containers"
         SONARQUBE_URL = "http://sonarqube.valterbarbosa.com.br"
+        TEST_PROJECTS = projetcsTest()
     }
 
     stages {
 
-        // node('docker') {
-        
-        //     stage 'Checkout'
-        //         checkout scm
-        //     stage 'Build & UnitTest'
-        //         sh "docker build -t accountownerapp:B${BUILD_NUMBER} -f Dockerfile ."
-        //         sh "docker build -t accountownerapp:test-B${BUILD_NUMBER} -f Dockerfile.Integration ."
-        
-        //     stage 'Integration Test'
-        //         sh "docker-compose -f docker-compose.integration.yml up --force-recreate --abort-on-container-exit"
-        //         sh "docker-compose -f docker-compose.integration.yml down -v"
-        // }
-
-        stage('Unit Tests') {
+        stage('Unit and Functional Tests ') {
 
             agent {
 
                 docker {
                     image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-                    args '-u root:root' // -v /etc/passwd:/etc/passwd => sh 'chown -R jenkins:root ${WORKSPACE}'
+                    args '-u root:root' 
                 }
             }
 
             steps {
-                
+
+                sh 'find . -wholename "**/TestResults/*.trx" -delete'
+                sh 'find . -wholename "**/TestResults/*.xml" -delete'
+                sh 'find . -wholename "/output-coverage/*.coverage.xml" -delete'
+                        
                 dir('./src/') {
 
                     script {
@@ -43,26 +43,32 @@ pipeline {
                             './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
                             './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
                             './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
-                            './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
-                            './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
-                            './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
-                            './Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
-                            './Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
-                            './Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
                         ]
 
                         for (int i = 0; i < projetcs.size(); ++i) {
 
                             //--results-directory /TestResults/
                             //--verbosity=normal 
+
+                            // using trx for xUnit and MSTest and coverage to SonarQube
+
+                            PROJECT_NAME = sh (
+                                script: "basename ${projetcs[i]}",
+                                returnStdout: true
+                            ).trim()
+
+                            echo "Gen ${PROJECT_NAME}.trx"
+
+                            echo "Gen ${PROJECT_NAME}.coverage.xml\n"
+                            
                             sh """
                                 dotnet test ${projetcs[i]} \
-                                    --logger 'trx;LogFileName=log_${i}.trx' \
                                     --configuration Debug \
-                                    --output ../output-tests  \
-                                    /p:CollectCoverage=true \
+                                    --logger 'trx;LogFileName=log_${PROJECT_NAME}.trx' \
+                                    --output ${WORKSPACE}/output-tests  \
+                                    /p:CoverletOutput='${WORKSPACE}/output-coverage/${PROJECT_NAME}.coverage.xml' \
                                     /p:CoverletOutputFormat=opencover \
-                                    /p:CoverletOutput='/output-coverage/${i}.coverage.xml' \
+                                    /p:CollectCoverage=true \
                                     /p:Exclude="[*.Tests]*"
                             """
                         }
@@ -73,18 +79,79 @@ pipeline {
 
                 always {
 
-                    // trx is INVALID FORMAT
-                    // xunit (
-                    //     thresholds: [ skipped(failureThreshold: '0'), failed(failureThreshold: '0') ],
-                    //     tools: [ BoostTest(pattern: '**/TestResults/*.trx') ]
-                    // )
+                    xunit(
+                        [MSTest(deleteOutputFiles: true,
+                                failIfNotNew: true,
+                                pattern: '**/TestResults/*.trx',
+                                skipNoTestFiles: false,
+                                stopProcessingIfError: true)
+                        ])
+                }
+            }
+        }
 
-                    // xunit (
-                    //     testTimeMargin: '3000',
-                    //     thresholdMode: 1,
-                    //     thresholds: [$class: 'FailedThreshold', unstableThreshold: '1'],
-                    //     tools: [$class: 'MSTest', pattern: '*.trx']
-                    // )
+        stage('Functional Tests ') {
+
+            agent any
+
+            when { buildingTag() }
+
+            // agent {
+
+            //     docker {
+            //         image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
+            //         args '-u root:root' 
+            //     }
+            // }
+
+            steps {
+                
+                dir('./src/') {
+
+                    script {
+
+                        def projetcs = [
+                            //'./Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
+                            //'./Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
+                            //'./Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
+                            //'./Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
+                            //'./Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
+                            //'./Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
+                        ]
+
+                        for (int i = 0; i < projetcs.size(); ++i) {
+
+                            //--results-directory /TestResults/
+                            //--verbosity=normal 
+
+                            // using trx for xUnit and MSTest and coverage to SonarQube
+
+                            PROJECT_NAME = sh (
+                                script: "basename ${projetcs[i]}",
+                                returnStdout: true
+                            ).trim()
+
+                            echo "Gen ${PROJECT_NAME}.trx"
+
+                            echo "Gen ${PROJECT_NAME}.coverage.xml\n"
+                            
+                            sh """
+                                dotnet test ${projetcs[i]} \
+                                    --configuration Debug \
+                                    --logger 'trx;LogFileName=log_${PROJECT_NAME}.trx' \
+                                    --output ${WORKSPACE}/output-tests  \
+                                    /p:CoverletOutput='${WORKSPACE}/output-coverage/${PROJECT_NAME}.coverage.xml' \
+                                    /p:CoverletOutputFormat=opencover \
+                                    /p:CollectCoverage=true \
+                                    /p:Exclude="[*.Tests]*"
+                            """
+                        }
+                    }
+                }
+            }
+            post {
+
+                always {
 
                     xunit(
                         [MSTest(deleteOutputFiles: true,
@@ -93,13 +160,6 @@ pipeline {
                                 skipNoTestFiles: false,
                                 stopProcessingIfError: true)
                         ])
-
-                    // sh 'chown -R jenkins:root ${WORKSPACE}'
-                    // step([
-                    //     $class: 'MSTestPublisher', 
-                    //     testResultsFile:"**/TestResults/*.trx", 
-                    //     failOnError: true, 
-                    //     keepLongStdio: true])
                 }
             }
         }
@@ -108,6 +168,7 @@ pipeline {
 
             agent {
                 dockerfile {
+                    filename 'Dockerfile'
                     args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
@@ -117,19 +178,16 @@ pipeline {
                  withCredentials([usernamePassword(credentialsId: 'SonarQube', passwordVariable: 'SONARQUBE_KEY', usernameVariable: 'DUMMY' )]) {
 
                     dir('./src/') {
-                        
-                        sh  '''
 
-                            #docker-compose up -d
-                            
-                            #sleep 190
+                        sh  '''
 
                             export PATH="$PATH:/root/.dotnet/tools"
                             
-                            dotnet sonarscanner begin /k:"eShop-On-Containers" \
+                            dotnet sonarscanner begin \
+                                /k:"eShop-On-Containers" \
                                 /d:sonar.host.url="$SONARQUBE_URL" \
                                 /d:sonar.login="$SONARQUBE_KEY" \
-                                /d:sonar.cs.opencover.reportsPaths="/output-coverage/*.xml" \
+                                /d:sonar.cs.opencover.reportsPaths="${WORKSPACE}/output-coverage/*.coverage.xml" \
                                 /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
                                 /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
                                 /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
@@ -139,8 +197,6 @@ pipeline {
                             dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
 
                             '''
-                            //dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
-                    
                     }
                 }
             }

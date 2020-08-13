@@ -53,7 +53,7 @@ pipeline {
                             // using trx for xUnit and MSTest and coverage to SonarQube
 
                             PROJECT_NAME = sh (
-                                script: "basename ${projetcs[i]}",
+                                script: "basename ${projetcs[i]}", // | tr '.' _
                                 returnStdout: true
                             ).trim()
 
@@ -179,7 +179,7 @@ pipeline {
 
                     dir('./src/') {
 
-                        sh  '''
+                        sh  """
 
                             export PATH="$PATH:/root/.dotnet/tools"
                             
@@ -196,7 +196,7 @@ pipeline {
                             
                             dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
 
-                            '''
+                            """
                     }
                 }
             }

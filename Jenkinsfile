@@ -159,7 +159,7 @@ pipeline {
 
             agent {
                 dockerfile {
-                    filename 'Dockerfile'
+                    filename 'Dockerfile.SonarQube'
                     args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
@@ -197,7 +197,7 @@ pipeline {
 
             agent any
 
-            when { buildingTag() }
+            // when { buildingTag() }
 
             steps {
                 // echo sh(script: 'env|sort', returnStdout: true)
@@ -213,7 +213,7 @@ pipeline {
 
             agent any
 
-            when { buildingTag() }
+            // when { buildingTag() }
 
             steps {
                     
@@ -248,7 +248,7 @@ pipeline {
 
             agent any
 
-            when { buildingTag() }
+            // when { buildingTag() }
 
             steps {
                     

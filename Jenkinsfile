@@ -10,7 +10,7 @@ pipeline {
 
     stages {
 
-        stage('Unit and Functional Tests ') {
+        stage('Unit Tests') {
 
             agent {
 

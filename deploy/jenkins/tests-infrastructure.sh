@@ -12,6 +12,6 @@ sleep 1
 echo "$DOCKER_FILE_FROM_ENV" > docker-compose-tests.env.yml
 sleep 1
 
-docker stack deploy --compose-file ./docker-compose-tests tests
+docker stack deploy --compose-file ./docker-compose-tests.env.yml tests
 
-rm -rf docker-compose-tests docker-compose.override.env.yml docker-compose.prod.env.yml
+rm -rf docker-compose-tests.env.yml docker-compose.override.env.yml docker-compose.prod.env.yml

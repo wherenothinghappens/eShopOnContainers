@@ -12,6 +12,8 @@ pipeline {
 
         stage('Unit Tests') {
 
+            when { buildingTag() }
+
             agent {
 
                 docker {
@@ -81,33 +83,48 @@ pipeline {
             }
         }
 
-        stage('Functional Tests ') {
-
+        stage('Infrastructure to Functional Tests'){
+            
             agent any
 
-            when { buildingTag() }
+            steps{
 
-            // agent {
+                dir('./src/') {
 
-            //     docker {
-            //         image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-            //         args '-u root:root' 
-            //     }
-            // }
+                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests up sql-data-test nosql-data-test basket-data-test rabbitmq-test identity-api-test payment-api-test'
+                }
+            }
+        }
+
+        stage('Functional Tests ') {
+
+            agent {
+
+                docker {
+                    image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
+                    args '-u root:root' 
+                }
+            }
+
+            // when { buildingTag() }
 
             steps {
-                
+
+                sh 'find . -wholename "**/TestResults/*.trx" -delete'
+                sh 'find . -wholename "**/TestResults/*.xml" -delete'
+                sh 'find . -wholename "/output-coverage/*.coverage.xml" -delete'
+                 
                 dir('./src/') {
 
                     script {
 
                         def projetcs = [
-                            //'./Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
-                            //'./Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
-                            //'./Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
-                            //'./Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
-                            //'./Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
-                            //'./Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
+                            './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
+                            './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
+                            './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
+                            './Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
+                            './Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
+                            './Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
                         ]
 
                         for (int i = 0; i < projetcs.size(); ++i) {
@@ -154,6 +171,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Clean Functional Tests Infrastructure'){
+            
+            agent any
+
+            steps{
+
+                dir('./src/') {
+
+                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml down --remove-orphans'
+                }
+            }
+        }
       
         stage('Static Analysis') {
 
@@ -197,7 +227,7 @@ pipeline {
 
             agent any
 
-            // when { buildingTag() }
+            when { buildingTag() }
 
             steps {
                 // echo sh(script: 'env|sort', returnStdout: true)
@@ -213,7 +243,7 @@ pipeline {
 
             agent any
 
-            // when { buildingTag() }
+            when { buildingTag() }
 
             steps {
                     
@@ -248,7 +278,7 @@ pipeline {
 
             agent any
 
-            // when { buildingTag() }
+            when { buildingTag() }
 
             steps {
                     

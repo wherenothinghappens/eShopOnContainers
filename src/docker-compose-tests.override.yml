@@ -5,6 +5,10 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${ESHOP_SERVICE_BUS_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${ESHOP_SERVICE_BUS_PASSWORD}
+      # RABBITMQ_DEFAULT_VHOST: ${ESHOP_SERVICE_BUS_VHOST}
 
   basket-data-test:
     ports:

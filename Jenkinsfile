@@ -100,14 +100,6 @@ pipeline {
                     sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests up -d sql-data-test nosql-data-test basket-data-test rabbitmq-test identity-api-test payment-api-test'
                 }
             }
-            // steps {
-            //     // echo sh(script: 'env|sort', returnStdout: true)
-            //     sh  'chmod +x -R ./deploy/jenkins/tests-infrastructure.sh'
-
-            //     dir('./src/') {
-            //         sh '../deploy/jenkins/tests-infrastructure.sh'
-            //     }
-            // }
         }
 
         stage('Functional Tests') {

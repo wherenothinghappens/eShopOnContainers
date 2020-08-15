@@ -118,8 +118,8 @@ pipeline {
                     -e identityUrl=http://identity-api
                     -e IdentityUrlExternal=http://valterbarbosa.com.br:5105
                     -e EventBusConnection=rabbitmq-test
-                    -e EventBusUserName=logUser
-                    -e EventBusPassword=logPwd
+                    -e EventBusUserName=a4pEQTjbY8aKtNBGLKRdbd91Fpp
+                    -e EventBusPassword=NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh
                     -e AzureServiceBusEnabled=False
 
                     ''' //Infrastructure to Functional Tests

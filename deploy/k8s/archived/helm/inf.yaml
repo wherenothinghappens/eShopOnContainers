@@ -11,7 +11,7 @@ inf:
 #    host:  my-sql-server   # Uncomment to specify a custom sql-server to be used. By default "sql-data-<appname>" will be used  
     common:
       user: sa              # SQL user
-      pwd: Pass@word        # SQL pwd
+      pwd: oMFfUi$O7BA^ur%m4F2!LaeiXCJAZo7e        # SQL pwd
       pid: Developer
     catalog:                # inf.sql.catalog: settings for the catalog-api sql (user, pwd, db)
       db: CatalogDb         # Catalog API SQL db name

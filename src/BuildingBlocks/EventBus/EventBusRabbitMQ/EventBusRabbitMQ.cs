@@ -12,6 +12,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -174,7 +175,14 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ
         {
             if (_consumerChannel != null)
             {
-                _consumerChannel.Dispose();
+                try
+                {
+                    _consumerChannel?.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex.ToString());
+                }
             }
 
             _subsManager.Clear();

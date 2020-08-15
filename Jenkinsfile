@@ -10,7 +10,7 @@ pipeline {
 
     stages {
 
-        stage('TESTING...'){
+        stage('Infrastructure to Functional Tests'){
             
             agent any
 
@@ -18,20 +18,9 @@ pipeline {
 
                 dir('./src/') {
 
-                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests up'
-                }
-            }
-            post {
+                    sh 'rm -r ${WORKSPACE}/tests-results/*'
 
-                always {
-
-                    xunit(
-                        [MSTest(deleteOutputFiles: true,
-                                failIfNotNew: true,
-                                pattern: 'tests-result/*.trx',
-                                skipNoTestFiles: false,
-                                stopProcessingIfError: true)
-                        ])
+                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests up -d sql-data-test nosql-data-test basket-data-test rabbitmq-test identity-api-test payment-api-test'
                 }
             }
         }
@@ -42,15 +31,26 @@ pipeline {
 
                 docker {
                     image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-                    args '-u root:root' 
+                    args '''
+                    
+                    -u root:root --network tests_default
+
+                    -e ASPNETCORE_ENVIRONMENT=Development
+                    -e ASPNETCORE_URLS=http://0.0.0.0:80
+                    -e ConnectionString=basket-data-test
+                    -e identityUrl=http://identity-api
+                    -e IdentityUrlExternal=http://valterbarbosa.com.br:5105
+                    -e EventBusConnection=rabbitmq-test
+                    -e EventBusUserName=logUser
+                    -e EventBusPassword=logPwd
+                    -e AzureServiceBusEnabled=False
+
+                    ''' //Infrastructure to Functional Tests
                 }
             }
 
             steps {
 
-                sh 'find . -wholename "**/TestResults/*.trx" -delete'
-                sh 'find . -wholename "**/TestResults/*.xml" -delete'
-                sh 'find . -wholename "/output-coverage/*.coverage.xml" -delete'
                         
                 dir('./src/') {
 
@@ -60,6 +60,13 @@ pipeline {
                             './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
                             './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
                             './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
+                            
+                            './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
+                            './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
+                            './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
+                            './Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
+                            './Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
+                            './Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
                         ]
 
                         for (int i = 0; i < projetcs.size(); ++i) {
@@ -84,8 +91,8 @@ pipeline {
                                     dotnet test ${projetcs[i]} \
                                         --configuration Debug \
                                         --logger 'trx;LogFileName=log_${PROJECT_NAME}.trx' \
-                                        --output ${WORKSPACE}/output-tests  \
-                                        /p:CoverletOutput='${WORKSPACE}/output-coverage/${PROJECT_NAME}.coverage.xml' \
+                                        --output ${WORKSPACE}/tests-results  \
+                                        /p:CoverletOutput='${WORKSPACE}/tests-results/${PROJECT_NAME}.coverage.xml' \
                                         /p:CoverletOutputFormat=opencover \
                                         /p:CollectCoverage=true \
                                         /p:Exclude="[*.Tests]*"
@@ -107,23 +114,10 @@ pipeline {
                     xunit(
                         [MSTest(deleteOutputFiles: true,
                                 failIfNotNew: true,
-                                pattern: '**/TestResults/*.trx',
+                                pattern: "${WORKSPACE}/tests-results/*.trx",
                                 skipNoTestFiles: false,
                                 stopProcessingIfError: true)
                         ])
-                }
-            }
-        }
-
-        stage('Infrastructure to Functional Tests'){
-            
-            agent any
-
-            steps{
-
-                dir('./src/') {
-
-                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests up -d sql-data-test nosql-data-test basket-data-test rabbitmq-test identity-api-test payment-api-test'
                 }
             }
         }
@@ -144,8 +138,8 @@ pipeline {
                     -e identityUrl=http://identity-api
                     -e IdentityUrlExternal=http://valterbarbosa.com.br:5105
                     -e EventBusConnection=rabbitmq-test
-                    -e EventBusUserName=a4pEQTjbY8aKtNBGLKRdbd91Fpp
-                    -e EventBusPassword=NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh
+                    -e EventBusUserName=logUser
+                    -e EventBusPassword=logPwd
                     -e AzureServiceBusEnabled=False
 
                     ''' //Infrastructure to Functional Tests
@@ -156,21 +150,12 @@ pipeline {
 
             steps {
 
-                sh 'find . -wholename "**/TestResults/*.trx" -delete'
-                sh 'find . -wholename "**/TestResults/*.xml" -delete'
-                sh 'find . -wholename "/output-coverage/*.coverage.xml" -delete'
-                 
                 dir('./src/') {
 
                     script {
 
                         def projetcs = [
-                            './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
-                            './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
-                            './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
-                            './Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
-                            './Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
-                            './Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
+
                         ]
 
                         for (int i = 0; i < projetcs.size(); ++i) {
@@ -195,8 +180,8 @@ pipeline {
                                     dotnet test ${projetcs[i]} \
                                         --configuration Debug \
                                         --logger 'trx;LogFileName=log_${PROJECT_NAME}.trx' \
-                                        --output ${WORKSPACE}/output-tests  \
-                                        /p:CoverletOutput='${WORKSPACE}/output-coverage/${PROJECT_NAME}.coverage.xml' \
+                                        --output ${WORKSPACE}/tests-results  \
+                                        /p:CoverletOutput='${WORKSPACE}/tests-results/${PROJECT_NAME}.coverage.xml' \
                                         /p:CoverletOutputFormat=opencover \
                                         /p:CollectCoverage=true \
                                         /p:Exclude="[*.Tests]*"
@@ -218,7 +203,7 @@ pipeline {
                     xunit(
                         [MSTest(deleteOutputFiles: true,
                                 failIfNotNew: true,
-                                pattern: '**/TestResults/*.trx',
+                                pattern: "${WORKSPACE}/tests-results/*.trx",
                                 skipNoTestFiles: false,
                                 stopProcessingIfError: false)
                         ])
@@ -262,7 +247,7 @@ pipeline {
                                 /k:"eShop-On-Containers" \
                                 /d:sonar.host.url="$SONARQUBE_URL" \
                                 /d:sonar.login="$SONARQUBE_KEY" \
-                                /d:sonar.cs.opencover.reportsPaths="${WORKSPACE}/output-coverage/*.coverage.xml" \
+                                /d:sonar.cs.opencover.reportsPaths="${WORKSPACE}/tests-results/*.coverage.xml" \
                                 /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
                                 /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
                                 /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"

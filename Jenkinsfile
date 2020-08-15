@@ -26,16 +26,19 @@ pipeline {
                         
                         ["unit", "functional"].each{ type ->
                             
+                            println "Searching for services..."
+
                             def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
-                            
-                            print tests
+                            tests.each { test ->
+                                println "$test"
+                            }
 
                             tests.each { test ->
                                 sh "docker-compose $composeFiles -p test run $test"
                             }
                         }
 
-                        sh "docker-compose $composeFiles down --remove-orphans"
+                        sh "docker-compose $composeFiles -p test down --remove-orphans"
                     }      
                 }
             }
@@ -67,24 +70,27 @@ pipeline {
 
                  withCredentials([usernamePassword(credentialsId: 'SonarQube', passwordVariable: 'SONARQUBE_KEY', usernameVariable: 'DUMMY' )]) {
 
-                    sh  """
+                    dir('./src/') {
 
-                        export PATH="$PATH:/root/.dotnet/tools"
-                        
-                        dotnet sonarscanner begin \
-                            /k:"eShop-On-Containers" \
-                            /d:sonar.host.url="$SONARQUBE_URL" \
-                            /d:sonar.login="$SONARQUBE_KEY" \
-                            /d:sonar.cs.opencover.reportsPaths="*/tests-results/*.coverage.xml" \
-                            /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
-                            /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
-                            /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
-                        
-                        dotnet build ./src/eShopOnContainers-ServicesAndWebApps.sln
-                        
-                        dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
+                        sh  """
 
-                        """
+                            export PATH="$PATH:/root/.dotnet/tools"
+                            
+                            dotnet sonarscanner begin \
+                                /k:"eShop-On-Containers" \
+                                /d:sonar.host.url="$SONARQUBE_URL" \
+                                /d:sonar.login="$SONARQUBE_KEY" \
+                                /d:sonar.cs.opencover.reportsPaths="tests-results/*.coverage.xml" \
+                                /d:sonar.coverage.exclusions="*/*/*Tests,tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
+                                /d:sonar.test.exclusions="*/*/*Tests,tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
+                                /d:sonar.exclusions="*/*/*Tests,tests/**/*,Examples/**/*,**/*.CodeGen.cs"
+                            
+                            dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
+                            
+                            dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
+
+                            """
+                    }
                 }
             }
         }

@@ -23,8 +23,8 @@ pipeline {
                         def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
                         sh "docker-compose $composeFiles -p test down --remove-orphans"
-                        
-                        ["unit", "functional"].each{ type ->
+                        //, "functional"
+                        ["unit"].each{ type ->
                             
                             println "Searching for services..."
 
@@ -47,7 +47,7 @@ pipeline {
                 always {
 
                     xunit(
-                        [MSTest(deleteOutputFiles: true,
+                        [MSTest(deleteOutputFiles: false,
                                 failIfNotNew: false,
                                 pattern: "*/tests-results/*.trx",
                                 skipNoTestFiles: false,
@@ -81,9 +81,10 @@ pipeline {
                                 /d:sonar.host.url="$SONARQUBE_URL" \
                                 /d:sonar.login="$SONARQUBE_KEY" \
                                 /d:sonar.cs.opencover.reportsPaths="tests-results/*.coverage.xml" \
-                                /d:sonar.coverage.exclusions="*/*/*Tests,tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
-                                /d:sonar.test.exclusions="*/*/*Tests,tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
-                                /d:sonar.exclusions="*/*/*Tests,tests/**/*,Examples/**/*,**/*.CodeGen.cs"
+                                /d:sonar.cs.vstest.reportsPaths="tests-results/*.trx" \
+                                /d:sonar.coverage.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
+                                    /d:sonar.test.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
+                                         /d:sonar.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*"
                             
                             dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
                             

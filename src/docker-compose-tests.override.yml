@@ -68,6 +68,8 @@ services:
         - Debug
         - --logger
         - trx;LogFileName=/tests/basket-functional-test-results.trx
+        - --output
+        - /tests
         - /p:CoverletOutput=/tests/basket-functional-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
@@ -96,6 +98,8 @@ services:
         - Debug
         - --logger
         - trx;LogFileName=/tests/basket-unit-test-results.trx
+        - --output
+        - /tests
         - /p:CoverletOutput=/tests/basket-unit-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
@@ -126,6 +130,8 @@ services:
         - Debug
         - --logger
         - trx;LogFileName=/tests/catalog-functional-test-results.trx
+        - --output
+        - /tests
         - /p:CoverletOutput=/tests/catalog-functional-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
@@ -156,6 +162,8 @@ services:
         - Debug
         - --logger
         - trx;LogFileName=/tests/catalog-unit-test-results.trx
+        - --output
+        - /tests
         - /p:CoverletOutput=/tests/catalog-unit-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
@@ -186,6 +194,8 @@ services:
         - Debug
         - --logger
         - trx;LogFileName=/tests/ordering-functional-test-results.trx
+        - --output
+        - /tests
         - /p:CoverletOutput=/tests/ordering-functional-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
@@ -216,6 +226,8 @@ services:
         - Debug
         - --logger
         - trx;LogFileName=/tests/ordering-unit-test-results.trx
+        - --output
+        - /tests
         - /p:CoverletOutput=/tests/ordering-unit-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
@@ -251,6 +263,8 @@ services:
         - Debug
         - --logger
         - trx;LogFileName=/tests/marketing-functional-test-results.trx
+        - --output
+        - /tests
         - /p:CoverletOutput=/tests/marketing-functional-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
@@ -293,6 +307,8 @@ services:
       - Debug
       - --logger
       - trx;LogFileName=/tests/locations-functional-test-results.trx
+      - --output
+      - /tests
       - /p:CoverletOutput=/tests/locations-functional-test-results.coverage.xml
       - /p:CoverletOutputFormat=opencover
       - /p:CollectCoverage=true

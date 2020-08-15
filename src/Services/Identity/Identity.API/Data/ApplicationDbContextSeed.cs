@@ -153,7 +153,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Data
                 Id = Guid.NewGuid().ToString(),
                 LastName = "DemoLastName",
                 Name = "DemoUser",
-                PhoneNumber = "1234567890",
+                PhoneNumber = "Pass@word7890",
                 UserName = "demouser@microsoft.com",
                 ZipCode = "98052",
                 State = "WA",
@@ -164,7 +164,7 @@ namespace Microsoft.eShopOnContainers.Services.Identity.API.Data
                 SecurityStamp = Guid.NewGuid().ToString("D"),
             };
 
-            user.PasswordHash = _passwordHasher.HashPassword(user, "oMFfUi$O7BA^ur%m4F2!LaeiXCJAZo7e1");
+            user.PasswordHash = _passwordHasher.HashPassword(user, "Pass@word1");
 
             return new List<ApplicationUser>()
             {

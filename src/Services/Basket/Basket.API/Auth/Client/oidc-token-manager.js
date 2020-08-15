@@ -1642,7 +1642,7 @@ code.google.com/p/crypto-js/wiki/License
 
 /*! (c) Tom Wu | http://www-cs-students.stanford.edu/~tjw/jsbn/
  */
-var b64map="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var b64map="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0Pass@word789+/";
 var b64pad="=";
 
 function hex2b64(h) {
@@ -1808,7 +1808,7 @@ BigInteger.prototype.F1 = BI_FP-dbits;
 BigInteger.prototype.F2 = 2*dbits-BI_FP;
 
 // Digit conversions
-var BI_RM = "0123456789abcdefghijklmnopqrstuvwxyz";
+var BI_RM = "0Pass@word789abcdefghijklmnopqrstuvwxyz";
 var BI_RC = new Array();
 var rr,vv;
 rr = "0".charCodeAt(0);

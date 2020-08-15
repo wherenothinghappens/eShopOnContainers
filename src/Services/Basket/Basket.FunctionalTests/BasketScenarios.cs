@@ -73,14 +73,14 @@ namespace Basket.FunctionalTests
 
         string BuildCheckout()
         {
-            var checkoutBasket = new 
+            var checkoutBasket = new
             {
                 City = "city",
                 Street = "street",
                 State = "state",
                 Country = "coutry",
                 ZipCode = "zipcode",
-                CardNumber = "1234567890123456",
+                CardNumber = "Pass@word7890Pass@word",
                 CardHolderName = "CardHolderName",
                 CardExpiration = DateTime.UtcNow.AddDays(1),
                 CardSecurityNumber = "123",

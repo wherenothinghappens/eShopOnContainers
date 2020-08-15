@@ -13,7 +13,7 @@
       "launchBrowser": true,
       "launchUrl": "/swagger",
       "environmentVariables": {
-        "ConnectionString": "server=localhost,5433;Database=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=oMFfUi$O7BA^ur%m4F2!LaeiXCJAZo7e",
+        "ConnectionString": "server=localhost,5433;Database=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=Pass@word",
         "Serilog:LogstashgUrl": "http://locahost:8080",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "EventBusConnection": "localhost",

@@ -10,6 +10,32 @@ pipeline {
 
     stages {
 
+        stage('TESTING...'){
+            
+            agent any
+
+            steps{
+
+                dir('./src/') {
+
+                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests up'
+                }
+            }
+            post {
+
+                always {
+
+                    xunit(
+                        [MSTest(deleteOutputFiles: true,
+                                failIfNotNew: true,
+                                pattern: '*/tests-result/*.trx',
+                                skipNoTestFiles: false,
+                                stopProcessingIfError: true)
+                        ])
+                }
+            }
+        }
+
         stage('Infrastructure to Functional Tests'){
             
             agent any

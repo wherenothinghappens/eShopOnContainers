@@ -10,25 +10,21 @@ pipeline {
 
     stages {
 
-        stage('Running Tests'){
+        stage('Running Tests') {
             
             agent any
 
-            steps {
-
-                // sh 'find . -wholename "*/tests-results/*.trx" -delete'
-                // sh 'find . -wholename "*/tests-results/*.xml" -delete'
+            steps{
 
                 dir('./src/') {
-
                     
                     script {
-                        
+                                    
                         def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
                         sh "docker-compose $composeFiles -p test down --remove-orphans"
                         
-                        ["unit", "functional"].each{ type ->
+                        ['ordering-api-unit-test'].each{ type ->
                             
                             def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
                             
@@ -40,7 +36,7 @@ pipeline {
                         }
 
                         sh "docker-compose $composeFiles down --remove-orphans"
-                    }                ​
+                    }      
                 }
             }
             post {
@@ -49,11 +45,11 @@ pipeline {
 
                     xunit(
                         [MSTest(deleteOutputFiles: true,
-                                failIfNotNew: false, //Overwriting by dotnet image
+                                failIfNotNew: false,
                                 pattern: "*/tests-results/*.trx",
                                 skipNoTestFiles: false,
                                 stopProcessingIfError: true)
-                    ])
+                        ])
                 }
             }
         }
@@ -84,7 +80,7 @@ pipeline {
                             /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
                             /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
                         
-                        dotnet build ./src//eShopOnContainers-ServicesAndWebApps.sln
+                        dotnet build ./src/eShopOnContainers-ServicesAndWebApps.sln
                         
                         dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
 

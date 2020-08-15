@@ -54,6 +54,9 @@ namespace Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ
 
             try
             {
+                // Todo(v):
+                // FunctionalTests.Services.Ordering.OrderingScenarios.Cancel_basket_and_check_order_status_cancelled
+                // Null Exception here
                 _connection.Dispose();
             }
             catch (IOException ex)

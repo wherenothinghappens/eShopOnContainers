@@ -93,6 +93,7 @@ services:
       - "5113:80"
     entrypoint:
         - dotnet
+        - ./Basket.UnitTests.csproj
         - test
         - --configuration 
         - Debug
@@ -157,6 +158,7 @@ services:
       - "5191:80"
     entrypoint:
         - dotnet
+        - ./Catalog.UnitTests.csproj
         - test
         - --configuration 
         - Debug
@@ -221,6 +223,7 @@ services:
       - "5112:80"
     entrypoint:
         - dotnet
+        - ./Ordering.UnitTests.csproj
         - test
         - --configuration 
         - Debug

@@ -47,11 +47,11 @@ pipeline {
                 always {
 
                     xunit(
-                        [MSTest(deleteOutputFiles: false,
+                        [MSTest(deleteOutputFiles: true,
                                 failIfNotNew: false,
                                 pattern: "*/tests-results/*.trx",
                                 skipNoTestFiles: false,
-                                stopProcessingIfError: true)
+                                stopProcessingIfError: false)
                         ])
                 }
             }

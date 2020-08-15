@@ -204,7 +204,7 @@ services:
         - test
         - --logger
         - trx;LogFileName=/tests/ordering-unit-test-results.trx
-        - /p:CoverletOutput=/tests/ordering-unit-test-test-results.coverage.xml
+        - /p:CoverletOutput=/tests/ordering-unit-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"

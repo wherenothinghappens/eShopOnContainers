@@ -126,33 +126,6 @@ pipeline {
                 }
             }
 
-// docker run -it -v $(pwd):/app \
-// -u root:root \
-// --network tests_default \
-// -e ASPNETCORE_ENVIRONMENT=Development \
-// -e ASPNETCORE_URLS=http://0.0.0.0:80 \
-// -e ConnectionString=basket-data-test \
-// -e identityUrl=http://identity-api \
-// -e IdentityUrlExternal=http://valterbarbosa.com.br:5105 \
-// -e EventBusConnection=rabbitmq-test \
-// -e EventBusUserName=logUser \
-// -e EventBusPassword=logPwd \
-// -e AzureServiceBusEnabled=False \
-// mcr.microsoft.com/dotnet/core/sdk:3.1
-
-
-// dotnet test /app/src/Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj \
-// dotnet test /app/src/Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj \
-
-// dotnet test /app/src/Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj \
-// --configuration Debug \
-// --logger 'trx;LogFileName=log_Basket.FunctionalTests.csproj.trx' \
-// --output ./output-tests  \
-// /p:CoverletOutput='./output-coverage/Basket.FunctionalTests.csproj.coverage.xml' \
-// /p:CoverletOutputFormat=opencover \
-// /p:CollectCoverage=true \
-// /p:Exclude="[*.Tests]*"
-
             // when { buildingTag() }
 
             steps {

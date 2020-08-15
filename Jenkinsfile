@@ -10,127 +10,37 @@ pipeline {
 
     stages {
 
-        stage('TESTING...'){
+        stage('Running Tests'){
             
             agent any
-
-            steps{
-
-                dir('./src/') {
-
-                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests up'
-                }
-            }
-            post {
-
-                always {
-
-                    xunit(
-                        [MSTest(deleteOutputFiles: true,
-                                failIfNotNew: true,
-                                pattern: '*/tests-result/*.trx',
-                                skipNoTestFiles: false,
-                                stopProcessingIfError: true)
-                        ])
-                }
-            }
-        }
-
-        stage('Infrastructure to Functional Tests'){
-            
-            agent any
-
-            steps{
-
-                dir('./src/') {
-
-                    sh 'rm -r ${WORKSPACE}/tests-results/*'
-
-                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests up -d sql-data-test nosql-data-test basket-data-test rabbitmq-test identity-api-test payment-api-test'
-                }
-            }
-        }
-
-        stage('Unit Tests') {
-
-            agent {
-
-                docker {
-                    image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-                    args '''
-                    
-                    -u root:root --network tests_default
-
-                    -e ASPNETCORE_ENVIRONMENT=Development
-                    -e ASPNETCORE_URLS=http://0.0.0.0:80
-                    -e ConnectionString=basket-data-test
-                    -e identityUrl=http://identity-api
-                    -e IdentityUrlExternal=http://valterbarbosa.com.br:5105
-                    -e EventBusConnection=rabbitmq-test
-                    -e EventBusUserName=logUser
-                    -e EventBusPassword=logPwd
-                    -e AzureServiceBusEnabled=False
-
-                    ''' //Infrastructure to Functional Tests
-                }
-            }
 
             steps {
 
+                // sh 'find . -wholename "*/tests-results/*.trx" -delete'
+                // sh 'find . -wholename "*/tests-results/*.xml" -delete'
+
+                dir('./src/') {
+
+                    
+                    script {
                         
-                dir('./src/') {
+                        def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
-                    script {
-
-                        def projetcs = [
-                            './Services/Basket/Basket.UnitTests/Basket.UnitTests.csproj',
-                            './Services/Catalog/Catalog.UnitTests/Catalog.UnitTests.csproj',
-                            './Services/Ordering/Ordering.UnitTests/Ordering.UnitTests.csproj',
+                        sh "docker-compose $composeFiles -p test down --remove-orphans"
+                        
+                        ["unit", "functional"].each{ type ->
                             
-                            './Services/Basket/Basket.FunctionalTests/Basket.FunctionalTests.csproj',
-                            './Services/Catalog/Catalog.FunctionalTests/Catalog.FunctionalTests.csproj',
-                            './Services/Location/Locations.FunctionalTests/Locations.FunctionalTests.csproj',
-                            './Services/Marketing/Marketing.FunctionalTests/Marketing.FunctionalTests.csproj',
-                            './Services/Ordering/Ordering.FunctionalTests/Ordering.FunctionalTests.csproj',
-                            './Tests/Services/Application.FunctionalTests/Application.FunctionalTests.csproj',
-                        ]
-
-                        for (int i = 0; i < projetcs.size(); ++i) {
-
-                            //--results-directory /TestResults/
-                            //--verbosity=normal 
-
-                            // using trx for xUnit and MSTest and coverage to SonarQube
-
-                            PROJECT_NAME = sh (
-                                script: "basename ${projetcs[i]}", // | tr '.' _
-                                returnStdout: true
-                            ).trim()
-
-                            echo ""
-                            echo "*************************** Gen ${PROJECT_NAME}.trx *********************************"
-                            echo "*************************** Gen ${PROJECT_NAME}.coverage.xml ************************"
-                            echo ""
+                            def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
                             
-                            try {
-                                sh """
-                                    dotnet test ${projetcs[i]} \
-                                        --configuration Debug \
-                                        --logger 'trx;LogFileName=log_${PROJECT_NAME}.trx' \
-                                        --output ${WORKSPACE}/tests-results  \
-                                        /p:CoverletOutput='${WORKSPACE}/tests-results/${PROJECT_NAME}.coverage.xml' \
-                                        /p:CoverletOutputFormat=opencover \
-                                        /p:CollectCoverage=true \
-                                        /p:Exclude="[*.Tests]*"
-                                """
-                            } catch (Exception e) {
-                                echo ""
-                                echo "Test failed: ${projetcs[i]}"
-                                echo "https://github.com/microsoft/vstest/issues/2384"
-                                echo ""
+                            print tests
+
+                            tests.each { test ->
+                                sh "docker-compose $composeFiles -p test run $test"
                             }
                         }
-                    }
+
+                        sh "docker-compose $composeFiles down --remove-orphans"
+                    }                ​
                 }
             }
             post {
@@ -139,117 +49,15 @@ pipeline {
 
                     xunit(
                         [MSTest(deleteOutputFiles: true,
-                                failIfNotNew: true,
-                                pattern: "${WORKSPACE}/tests-results/*.trx",
+                                failIfNotNew: false, //Overwriting by dotnet image
+                                pattern: "*/tests-results/*.trx",
                                 skipNoTestFiles: false,
                                 stopProcessingIfError: true)
-                        ])
+                    ])
                 }
             }
         }
 
-        stage('Functional Tests') {
-
-            agent {
-
-                docker {
-                    image 'mcr.microsoft.com/dotnet/core/sdk:3.1'
-                    args '''
-                    
-                    -u root:root --network tests_default
-
-                    -e ASPNETCORE_ENVIRONMENT=Development
-                    -e ASPNETCORE_URLS=http://0.0.0.0:80
-                    -e ConnectionString=basket-data-test
-                    -e identityUrl=http://identity-api
-                    -e IdentityUrlExternal=http://valterbarbosa.com.br:5105
-                    -e EventBusConnection=rabbitmq-test
-                    -e EventBusUserName=logUser
-                    -e EventBusPassword=logPwd
-                    -e AzureServiceBusEnabled=False
-
-                    ''' //Infrastructure to Functional Tests
-                }
-            }
-
-            // when { buildingTag() }
-
-            steps {
-
-                dir('./src/') {
-
-                    script {
-
-                        def projetcs = [
-
-                        ]
-
-                        for (int i = 0; i < projetcs.size(); ++i) {
-
-                            //--results-directory /TestResults/
-                            //--verbosity=normal 
-
-                            // using trx for xUnit and MSTest and coverage to SonarQube
-
-                            PROJECT_NAME = sh (
-                                script: "basename ${projetcs[i]}",
-                                returnStdout: true
-                            ).trim()
-
-                            echo ""
-                            echo "*************************** Gen ${PROJECT_NAME}.trx *********************************"
-                            echo "*************************** Gen ${PROJECT_NAME}.coverage.xml ************************"
-                            echo ""
-
-                            try {
-                                sh """
-                                    dotnet test ${projetcs[i]} \
-                                        --configuration Debug \
-                                        --logger 'trx;LogFileName=log_${PROJECT_NAME}.trx' \
-                                        --output ${WORKSPACE}/tests-results  \
-                                        /p:CoverletOutput='${WORKSPACE}/tests-results/${PROJECT_NAME}.coverage.xml' \
-                                        /p:CoverletOutputFormat=opencover \
-                                        /p:CollectCoverage=true \
-                                        /p:Exclude="[*.Tests]*"
-                                """
-                            } catch (Exception e) {
-                                echo ""
-                                echo "Test failed: ${projetcs[i]}"
-                                echo "https://github.com/microsoft/vstest/issues/2384"
-                                echo ""
-                            }
-                        }
-                    }
-                }
-            }
-            post {
-
-                always {
-
-                    xunit(
-                        [MSTest(deleteOutputFiles: true,
-                                failIfNotNew: true,
-                                pattern: "${WORKSPACE}/tests-results/*.trx",
-                                skipNoTestFiles: false,
-                                stopProcessingIfError: false)
-                        ])
-                }
-            }
-        }
-
-        stage('Clean Functional Tests Infrastructure'){
-            
-            agent any
-
-            steps{
-
-                dir('./src/') {
-
-                    sh 'docker-compose -f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -p tests down --remove-orphans'
-                }
-            }
-        }
-      
         stage('Static Analysis') {
 
             agent {
@@ -263,27 +71,24 @@ pipeline {
 
                  withCredentials([usernamePassword(credentialsId: 'SonarQube', passwordVariable: 'SONARQUBE_KEY', usernameVariable: 'DUMMY' )]) {
 
-                    dir('./src/') {
+                    sh  """
 
-                        sh  """
+                        export PATH="$PATH:/root/.dotnet/tools"
+                        
+                        dotnet sonarscanner begin \
+                            /k:"eShop-On-Containers" \
+                            /d:sonar.host.url="$SONARQUBE_URL" \
+                            /d:sonar.login="$SONARQUBE_KEY" \
+                            /d:sonar.cs.opencover.reportsPaths="*/tests-results/*.coverage.xml" \
+                            /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
+                            /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
+                            /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
+                        
+                        dotnet build ./src//eShopOnContainers-ServicesAndWebApps.sln
+                        
+                        dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
 
-                            export PATH="$PATH:/root/.dotnet/tools"
-                            
-                            dotnet sonarscanner begin \
-                                /k:"eShop-On-Containers" \
-                                /d:sonar.host.url="$SONARQUBE_URL" \
-                                /d:sonar.login="$SONARQUBE_KEY" \
-                                /d:sonar.cs.opencover.reportsPaths="${WORKSPACE}/tests-results/*.coverage.xml" \
-                                /d:sonar.coverage.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
-                                /d:sonar.test.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs" \
-                                /d:sonar.exclusions="tests/**/*,Examples/**/*,**/*.CodeGen.cs"
-                            
-                            dotnet build ./eShopOnContainers-ServicesAndWebApps.sln
-                            
-                            dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
-
-                            """
-                    }
+                        """
                 }
             }
         }

@@ -24,7 +24,7 @@ pipeline {
 
                         sh "docker-compose $composeFiles -p test down --remove-orphans"
                         
-                        ['ordering-api-unit-test'].each{ type ->
+                        ["unit", "functional"].each{ type ->
                             
                             def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
                             

@@ -84,15 +84,18 @@ services:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   ordering-api-unit-test:
-    image: ${REGISTRY:-eshop}/ordering-api-unit-test:${TAG:-latest}
-    build:
-      context: .
-      dockerfile: Services/Ordering/Ordering.API/Dockerfile
-      target: unittest
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    # image: ${REGISTRY:-eshop}/ordering-api-unit-test:${TAG:-latest}
+    # build:
+    #   context: .
+    #   dockerfile: Services/Ordering/Ordering.API/Dockerfile
+    #   target: unittest
+    working_dir: /app/Services/Ordering/Ordering.UnitTests
     depends_on:
       - sql-data-test
       - rabbitmq-test
     volumes:
+      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   marketing-api-functional-test:

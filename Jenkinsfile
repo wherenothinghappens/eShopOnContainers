@@ -23,8 +23,8 @@ pipeline {
                         def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
                         sh "docker-compose $composeFiles -p test down --remove-orphans"
-                        //, "functional"
-                        ["unit"].each{ type ->
+                        //"unit", "functional"
+                        ["ordering-api-unit-test"].each{ type ->
                             
                             println "Searching for services..."
 

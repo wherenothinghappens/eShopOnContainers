@@ -83,6 +83,7 @@ pipeline {
                                 /d:sonar.login="$SONARQUBE_KEY" \
                                 /d:sonar.cs.opencover.reportsPaths="tests-results/*.coverage.xml" \
                                 /d:sonar.cs.vstest.reportsPaths="tests-results/*.trx" \
+                                /d:sonar.verbose=true \
                                 /d:sonar.coverage.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
                                     /d:sonar.test.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
                                          /d:sonar.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*"

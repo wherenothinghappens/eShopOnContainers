@@ -22,7 +22,7 @@ pipeline {
                                     
                         def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
-                        sh "docker-compose $composeFiles -p test down -v --rmi all --remove-orphans"
+                        sh "docker-compose $composeFiles -p test down -v --remove-orphans"
 
                         //"unit", "functional"
                         ["ordering-api-unit-test"].each{ type ->
@@ -39,7 +39,7 @@ pipeline {
                             }
                         }
 
-                        sh "docker-compose $composeFiles -p test down -v --rmi all --remove-orphans"
+                        sh "docker-compose $composeFiles -p test down -v --remove-orphans"
                     }      
                 }
             }

@@ -20,7 +20,7 @@ pipeline {
                     
                     script {
                                     
-                        ddef composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
+                        def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
                         sh "docker-compose $composeFiles -p test down --remove-orphans"
                         //"unit", "functional"
@@ -72,8 +72,6 @@ pipeline {
 
                     dir('./src/') {
 
-                        // /d:sonar.cs.vstest.reportsPaths="tests-results/*.trx" \
-                        
                         sh  """
 
                             export PATH="$PATH:/root/.dotnet/tools"

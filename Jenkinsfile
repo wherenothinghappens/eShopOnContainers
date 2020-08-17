@@ -47,11 +47,11 @@ pipeline {
                 always {
 
                     xunit(
-                        [MSTest(deleteOutputFiles: true,
+                        [MSTest(deleteOutputFiles: false,
                                 failIfNotNew: false,
-                                pattern: "${WORKSPACE}/output-coverage/*.trx",
+                                pattern: "*/tests-results/*.trx",
                                 skipNoTestFiles: false,
-                                stopProcessingIfError: false)
+                                stopProcessingIfError: true)
                         ])
                 }
             }
@@ -82,7 +82,8 @@ pipeline {
                                 /k:"eShop-On-Containers" \
                                 /d:sonar.host.url="$SONARQUBE_URL" \
                                 /d:sonar.login="$SONARQUBE_KEY" \
-                                /d:sonar.cs.opencover.reportsPaths="${WORKSPACE}/output-coverage/*.coverage.xml" \
+                                /d:sonar.cs.opencover.reportsPaths="tests-results/*.coverage.xml" \
+                                /d:sonar.cs.vstest.reportsPaths="tests-results/*.trx" \
                                 /d:sonar.coverage.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
                                     /d:sonar.test.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
                                          /d:sonar.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*"

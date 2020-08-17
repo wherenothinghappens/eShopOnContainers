@@ -64,13 +64,9 @@ services:
     entrypoint:
         - dotnet
         - test
-        - --configuration
-        - Debug
         - --logger
         - trx;LogFileName=/tests/basket-functional-test-results.trx
-        - --output
-        - /tests
-        - /p:CoverletOutput=/tests/basket-functional-test-results.coverage.xml
+        - /p:CoverletOutput=/tests/basket.functional.test.results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -94,14 +90,9 @@ services:
     entrypoint:
         - dotnet
         - test
-        - ./Basket.UnitTests.csproj
-        - --configuration 
-        - Debug
         - --logger
         - trx;LogFileName=/tests/basket-unit-test-results.trx
-        - --output
-        - /tests
-        - /p:CoverletOutput=/tests/basket-unit-test-results.coverage.xml
+        - /p:CoverletOutput=/tests/basket.unit.test.results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -127,13 +118,9 @@ services:
     entrypoint:
         - dotnet
         - test
-        - --configuration 
-        - Debug
         - --logger
         - trx;LogFileName=/tests/catalog-functional-test-results.trx
-        - --output
-        - /tests
-        - /p:CoverletOutput=/tests/catalog-functional-test-results.coverage.xml
+        - /p:CoverletOutput=/tests/catalog.functional.test.results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -159,14 +146,9 @@ services:
     entrypoint:
         - dotnet
         - test
-        - ./Catalog.UnitTests.csproj
-        - --configuration 
-        - Debug
         - --logger
         - trx;LogFileName=/tests/catalog-unit-test-results.trx
-        - --output
-        - /tests
-        - /p:CoverletOutput=/tests/catalog-unit-test-results.coverage.xml
+        - /p:CoverletOutput=/tests/catalog.unit.test.results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -192,13 +174,9 @@ services:
     entrypoint:
         - dotnet
         - test
-        - --configuration 
-        - Debug
         - --logger
         - trx;LogFileName=/tests/ordering-functional-test-results.trx
-        - --output
-        - /tests
-        - /p:CoverletOutput=/tests/ordering-functional-test-results.coverage.xml
+        - /p:CoverletOutput=/tests/ordering.functional.test.results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -208,7 +186,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_ORDERING_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.OrderingDb;User Id=sa;Password=Pass@word}
-      - identityUrl=http://identity-api-test
+      - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=rabbitmq-test
       - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
@@ -224,12 +202,9 @@ services:
     entrypoint:
         - dotnet
         - test
-        - ./Ordering.UnitTests.csproj
-        - --configuration 
-        - Debug
         - --logger
         - trx;LogFileName=/tests/ordering-unit-test-results.trx
-        - /p:CoverletOutput=/tests/ordering-unit-test-results.coverage.xml
+        - /p:CoverletOutput=/tests/ordering.unit.test.results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -260,13 +235,9 @@ services:
     entrypoint:
         - dotnet
         - test
-        - --configuration 
-        - Debug
         - --logger
         - trx;LogFileName=/tests/marketing-functional-test-results.trx
-        - --output
-        - /tests
-        - /p:CoverletOutput=/tests/marketing-functional-test-results.coverage.xml
+        - /p:CoverletOutput=/tests/marketing.functional.test.results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -304,13 +275,9 @@ services:
     entrypoint:
       - dotnet
       - test
-      - --configuration 
-      - Debug
       - --logger
       - trx;LogFileName=/tests/locations-functional-test-results.trx
-      - --output
-      - /tests
-      - /p:CoverletOutput=/tests/locations-functional-test-results.coverage.xml
+      - /p:CoverletOutput=/tests/locations.functional.test.results.coverage.xml
       - /p:CoverletOutputFormat=opencover
       - /p:CollectCoverage=true
       - /p:Exclude="[*.Tests]*"

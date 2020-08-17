@@ -25,7 +25,7 @@ pipeline {
                         sh "docker-compose $composeFiles -p test down -v --remove-orphans"
 
                         //"unit", "functional"
-                        ["ordering-api-unit-test"].each{ type ->
+                        ["unit"].each{ type ->
                             
                             println "Searching for services..."
 

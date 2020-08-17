@@ -84,7 +84,7 @@ services:
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   ordering-api-unit-test:
-      image: ${REGISTRY:-eshop}/ordering-api-unit-test:${TAG:-latest}
+    image: ${REGISTRY:-eshop}/ordering-api-unit-test:${TAG:-latest}
     build:
       context: .
       dockerfile: Services/Ordering/Ordering.API/Dockerfile

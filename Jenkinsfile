@@ -49,7 +49,7 @@ pipeline {
                     xunit(
                         [MSTest(deleteOutputFiles: true,
                                 failIfNotNew: false,
-                                pattern: "*/tests-results/*.trx",
+                                pattern: "${WORKSPACE}/output-coverage/*.trx",
                                 skipNoTestFiles: false,
                                 stopProcessingIfError: false)
                         ])
@@ -72,6 +72,8 @@ pipeline {
 
                     dir('./src/') {
 
+                        // /d:sonar.cs.vstest.reportsPaths="tests-results/*.trx" \
+                        
                         sh  """
 
                             export PATH="$PATH:/root/.dotnet/tools"
@@ -80,8 +82,7 @@ pipeline {
                                 /k:"eShop-On-Containers" \
                                 /d:sonar.host.url="$SONARQUBE_URL" \
                                 /d:sonar.login="$SONARQUBE_KEY" \
-                                /d:sonar.cs.opencover.reportsPaths="tests-results/*.coverage.xml" \
-                                /d:sonar.cs.vstest.reportsPaths="tests-results/*.trx" \
+                                /d:sonar.cs.opencover.reportsPaths="${WORKSPACE}/output-coverage/*.coverage.xml" \
                                 /d:sonar.coverage.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
                                     /d:sonar.test.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
                                          /d:sonar.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*"

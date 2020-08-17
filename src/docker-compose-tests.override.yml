@@ -90,7 +90,6 @@ services:
     entrypoint:
         - dotnet
         - test
-        - --configuration Debug
         - --logger
         - trx;LogFileName=/tests/basket-unit-test-results.trx
         - /p:CoverletOutput=/tests/basket-unit-test-results.coverage.xml

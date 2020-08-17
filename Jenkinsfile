@@ -88,7 +88,7 @@ pipeline {
                                     /d:sonar.test.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*" \
                                          /d:sonar.exclusions="*/*/*Tests/*,*/*/*/*/*igrations/*"
                             
-                            dotnet rebuild ./eShopOnContainers-ServicesAndWebApps.sln 
+                            dotnet build ./eShopOnContainers-ServicesAndWebApps.sln 
                             
                             dotnet sonarscanner end /d:sonar.login="$SONARQUBE_KEY"
 

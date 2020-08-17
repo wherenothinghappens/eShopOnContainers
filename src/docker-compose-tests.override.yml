@@ -208,7 +208,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_ORDERING_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.OrderingDb;User Id=sa;Password=Pass@word}
-      - identityUrl=http://identity-api
+      - identityUrl=http://identity-api-test
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=rabbitmq-test
       - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
@@ -229,8 +229,6 @@ services:
         - Debug
         - --logger
         - trx;LogFileName=/tests/ordering-unit-test-results.trx
-        - --output
-        - /tests
         - /p:CoverletOutput=/tests/ordering-unit-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true

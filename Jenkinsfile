@@ -81,7 +81,6 @@ pipeline {
                                 /k:"eShop-On-Containers" \
                                 /d:sonar.host.url="$SONARQUBE_URL" \
                                 /d:sonar.login="$SONARQUBE_KEY" \
-                                /d:sonar.working.directory=${WORKSPACE}/src
                                 /d:sonar.cs.opencover.reportsPaths="tests-results/*.coverage.xml" \
                                 /d:sonar.cs.vstest.reportsPaths="tests-results/*.trx" \
                                 /d:sonar.verbose=true \

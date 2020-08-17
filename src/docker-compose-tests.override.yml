@@ -276,7 +276,7 @@ services:
       - dotnet
       - test
       - --logger
-      - verbosity=detailed;trx;LogFileName=/tests/locations-functional-test-results.trx
+      - trx;LogFileName=/tests/locations-functional-test-results.trx
       - /p:CopyLocalLockFileAssemblies=true
       - /p:CoverletOutput=/tests/locations-functional-test-results.coverage.xml
       - /p:CoverletOutputFormat=opencover

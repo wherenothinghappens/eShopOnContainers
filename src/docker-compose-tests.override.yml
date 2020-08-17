@@ -66,7 +66,7 @@ services:
         - test
         - --logger
         - trx;LogFileName=/tests/basket-functional-test-results.trx
-        - /p:CoverletOutput=/tests/basket.functional.test.results.coverage.xml
+        - /p:CoverletOutput=/tests/basket-functional-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -92,7 +92,7 @@ services:
         - test
         - --logger
         - trx;LogFileName=/tests/basket-unit-test-results.trx
-        - /p:CoverletOutput=/tests/basket.unit.test.results.coverage.xml
+        - /p:CoverletOutput=/tests/basket-unit-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -120,7 +120,7 @@ services:
         - test
         - --logger
         - trx;LogFileName=/tests/catalog-functional-test-results.trx
-        - /p:CoverletOutput=/tests/catalog.functional.test.results.coverage.xml
+        - /p:CoverletOutput=/tests/catalog-functional-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -148,7 +148,7 @@ services:
         - test
         - --logger
         - trx;LogFileName=/tests/catalog-unit-test-results.trx
-        - /p:CoverletOutput=/tests/catalog.unit.test.results.coverage.xml
+        - /p:CoverletOutput=/tests/catalog-unit-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -176,7 +176,7 @@ services:
         - test
         - --logger
         - trx;LogFileName=/tests/ordering-functional-test-results.trx
-        - /p:CoverletOutput=/tests/ordering.functional.test.results.coverage.xml
+        - /p:CoverletOutput=/tests/ordering-functional-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -204,7 +204,7 @@ services:
         - test
         - --logger
         - trx;LogFileName=/tests/ordering-unit-test-results.trx
-        - /p:CoverletOutput=/tests/ordering.unit.test.results.coverage.xml
+        - /p:CoverletOutput=/tests/ordering-unit-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -237,7 +237,7 @@ services:
         - test
         - --logger
         - trx;LogFileName=/tests/marketing-functional-test-results.trx
-        - /p:CoverletOutput=/tests/marketing.functional.test.results.coverage.xml
+        - /p:CoverletOutput=/tests/marketing-functional-test-results.coverage.xml
         - /p:CoverletOutputFormat=opencover
         - /p:CollectCoverage=true
         - /p:Exclude="[*.Tests]*"
@@ -277,7 +277,7 @@ services:
       - test
       - --logger
       - trx;LogFileName=/tests/locations-functional-test-results.trx
-      - /p:CoverletOutput=/tests/locations.functional.test.results.coverage.xml
+      - /p:CoverletOutput=/tests/locations-functional-test-results.coverage.xml
       - /p:CoverletOutputFormat=opencover
       - /p:CollectCoverage=true
       - /p:Exclude="[*.Tests]*"

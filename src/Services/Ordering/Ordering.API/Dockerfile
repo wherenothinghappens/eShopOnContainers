@@ -51,7 +51,7 @@ RUN dotnet restore "eShopOnContainers-ServicesAndWebApps.sln"
 
 COPY . .
 WORKDIR /src/Services/Ordering/Ordering.API
-# RUN dotnet publish --no-restore -c Release -o /app
+RUN dotnet publish --no-restore -c Release -o /app
 
 FROM build as unittest
 WORKDIR /src/Services/Ordering/Ordering.UnitTests

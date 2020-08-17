@@ -202,7 +202,6 @@ services:
     entrypoint:
         - dotnet
         - test
-        - --no-build
         - -c 
         - Release
         - --logger

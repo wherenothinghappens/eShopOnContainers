@@ -38,7 +38,7 @@ pipeline {
                             }
                         }
 
-                        sh "docker-compose $composeFiles -p test down --remove-orphans"
+                        sh "docker-compose $composeFiles -p test down -v --rmi all --remove-orphans"
                     }      
                 }
             }

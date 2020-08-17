@@ -20,7 +20,7 @@ pipeline {
                     
                     script {
                                     
-                        def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
+                        ddef composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
                         sh "docker-compose $composeFiles -p test down --remove-orphans"
                         //"unit", "functional"

@@ -202,6 +202,9 @@ services:
     entrypoint:
         - dotnet
         - test
+        - --no-build
+        - -c 
+        - Release
         - --logger
         - trx;LogFileName=/tests/ordering-unit-test-results.trx
         - /p:CoverletOutput=/tests/ordering.unit.test.results.coverage.xml

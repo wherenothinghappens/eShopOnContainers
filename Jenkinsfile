@@ -10,6 +10,11 @@
 
         stages {
 
+            stage('.sh scripts permission'){
+
+                sh 'chmod +x -R ./deploy/jenkins/*'
+            }
+
             stage('Running Tests') {
                 
                 agent any

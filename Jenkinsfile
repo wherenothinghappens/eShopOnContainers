@@ -12,7 +12,11 @@
 
             stage('.sh scripts permission'){
 
-                sh 'chmod +x -R ./deploy/jenkins/*'
+                agent any
+
+                steps{
+                    sh 'chmod +x -R ./deploy/jenkins/*'
+                }
             }
 
             stage('Running Tests') {
@@ -125,8 +129,6 @@
                 when { buildingTag() }
 
                 steps {
-                    // echo sh(script: 'env|sort', returnStdout: true)
-                    sh  'chmod +x -R ./deploy/jenkins/deploy-envsubst.sh'
 
                     dir('./src/') {
                         sh '../deploy/jenkins/deploy-envsubst.sh'

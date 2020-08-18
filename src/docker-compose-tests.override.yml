@@ -128,7 +128,7 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
     ports:
       - "5191:80"
-    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    command: sh -c "cd / && ./tests-entrypoint.sh"
     volumes:
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
@@ -202,7 +202,7 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5110:80"
-    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    entrypoint: sh -c "cd / && chmod +x -R ./tests-entrypoint.sh && ./tests-entrypoint.sh"
 
   payment-api-test:
     environment:

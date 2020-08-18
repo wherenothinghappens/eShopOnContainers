@@ -65,7 +65,7 @@ services:
       - "5103:80"
     entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
     volumes:
-      - .:/app
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
@@ -89,7 +89,7 @@ services:
       - "5113:80"
     entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
     volumes:
-      - .:/app
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
@@ -115,7 +115,7 @@ services:
       - "5101:80"
     entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
     volumes:
-      - .:/app
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
@@ -141,7 +141,7 @@ services:
       - "5191:80"
     entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
     volumes:
-      - .:/app
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
@@ -167,7 +167,7 @@ services:
       - "5102:80"
     entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
     volumes:
-      - .:/app
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
@@ -193,7 +193,7 @@ services:
       - "5112:80"
     entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
     volumes:
-      - .:/app
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
       
@@ -224,7 +224,7 @@ services:
       - "5110:80"
     entrypoint: sh -c "cd / && chmod +x -R ./tests-entrypoint.sh && ./tests-entrypoint.sh"
     volumes:
-      - .:/app
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
@@ -262,6 +262,6 @@ services:
       - "5109:80"
     entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
     volumes:
-      - .:/app
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
       - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests

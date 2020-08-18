@@ -105,7 +105,7 @@ services:
 
   locations-api-functional-test:
     image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Location/Location.FunctionalTests
+    working_dir: /app/Services/Location/Locations.FunctionalTests
     depends_on:
       - nosql-data-test
       - rabbitmq-test

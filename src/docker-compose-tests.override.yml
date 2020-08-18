@@ -61,15 +61,10 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5103:80"
-    entrypoint:
-        - dotnet
-        - test
-        - --logger
-        - trx;LogFileName=/tests/basket-functional-test-results.trx
-        - /p:CoverletOutput=/tests/basket-functional-test-results.coverage.xml
-        - /p:CoverletOutputFormat=opencover
-        - /p:CollectCoverage=true
-        - /p:Exclude="[*.Tests]*"
+    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    volumes:
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   basket-api-unit-test:
     environment:
@@ -87,15 +82,10 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5113:80"
-    entrypoint:
-        - dotnet
-        - test
-        - --logger
-        - trx;LogFileName=/tests/basket-unit-test-results.trx
-        - /p:CoverletOutput=/tests/basket-unit-test-results.coverage.xml
-        - /p:CoverletOutputFormat=opencover
-        - /p:CollectCoverage=true
-        - /p:Exclude="[*.Tests]*"
+    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    volumes:
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   catalog-api-functional-test:
     environment:
@@ -115,15 +105,10 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
     ports:
       - "5101:80"
-    entrypoint:
-        - dotnet
-        - test
-        - --logger
-        - trx;LogFileName=/tests/catalog-functional-test-results.trx
-        - /p:CoverletOutput=/tests/catalog-functional-test-results.coverage.xml
-        - /p:CoverletOutputFormat=opencover
-        - /p:CollectCoverage=true
-        - /p:Exclude="[*.Tests]*"
+    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    volumes:
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   catalog-api-unit-test:
     environment:
@@ -143,15 +128,10 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
     ports:
       - "5191:80"
-    entrypoint:
-        - dotnet
-        - test
-        - --logger
-        - trx;LogFileName=/tests/catalog-unit-test-results.trx
-        - /p:CoverletOutput=/tests/catalog-unit-test-results.coverage.xml
-        - /p:CoverletOutputFormat=opencover
-        - /p:CollectCoverage=true
-        - /p:Exclude="[*.Tests]*"
+    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    volumes:
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   ordering-api-functional-test:
     environment:
@@ -171,15 +151,10 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5102:80"
-    entrypoint:
-        - dotnet
-        - test
-        - --logger
-        - trx;LogFileName=/tests/ordering-functional-test-results.trx
-        - /p:CoverletOutput=/tests/ordering-functional-test-results.coverage.xml
-        - /p:CoverletOutputFormat=opencover
-        - /p:CollectCoverage=true
-        - /p:Exclude="[*.Tests]*"
+    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    volumes:
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   ordering-api-unit-test:
     environment:
@@ -199,16 +174,11 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5112:80"
-    entrypoint:
-        - dotnet
-        - test
-        - --logger
-        - trx;LogFileName=/tests/ordering-unit-test-results.trx
-        - /p:CoverletOutput=/tests/ordering-unit-test-results.coverage.xml
-        - /p:CoverletOutputFormat=opencover
-        - /p:CollectCoverage=true
-        - /p:Exclude="[*.Tests]*"
-
+    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    volumes:
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+      
   marketing-api-functional-test:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -232,15 +202,7 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5110:80"
-    entrypoint:
-        - dotnet
-        - test
-        - --logger
-        - trx;LogFileName=/tests/marketing-functional-test-results.trx
-        - /p:CoverletOutput=/tests/marketing-functional-test-results.coverage.xml
-        - /p:CoverletOutputFormat=opencover
-        - /p:CollectCoverage=true
-        - /p:Exclude="[*.Tests]*"
+    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
 
   payment-api-test:
     environment:
@@ -272,13 +234,7 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5109:80"
-    entrypoint:
-      - dotnet
-      - test
-      - --logger
-      - trx;LogFileName=/tests/locations-functional-test-results.trx
-      - /p:CopyLocalLockFileAssemblies=true
-      - /p:CoverletOutput=/tests/locations-functional-test-results.coverage.xml
-      - /p:CoverletOutputFormat=opencover
-      - /p:CollectCoverage=true
-      - /p:Exclude="[*.Tests]*"
+    entrypoint: sh -c "cd / && ./tests-entrypoint.sh"
+    volumes:
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests

@@ -29,7 +29,6 @@ services:
       - identity-api-test
       - rabbitmq-test
     volumes:
-      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   basket-api-unit-test:
@@ -40,7 +39,6 @@ services:
       - identity-api-test
       - rabbitmq-test
     volumes:
-      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   catalog-api-functional-test:
@@ -50,7 +48,6 @@ services:
       - sql-data-test
       - rabbitmq-test
     volumes:
-      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   catalog-api-unit-test:
@@ -60,7 +57,6 @@ services:
       - sql-data-test
       - rabbitmq-test
     volumes:
-      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   ordering-api-functional-test:
@@ -70,7 +66,6 @@ services:
       - sql-data-test
       - rabbitmq-test
     volumes:
-      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   ordering-api-unit-test:
@@ -80,7 +75,6 @@ services:
       - sql-data-test
       - rabbitmq-test
     volumes:
-      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   marketing-api-functional-test:
@@ -92,7 +86,6 @@ services:
       - identity-api-test
       - rabbitmq-test
     volumes:
-      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
 
   payment-api-test:
@@ -110,5 +103,4 @@ services:
       - nosql-data-test
       - rabbitmq-test
     volumes:
-      - .:/app
       - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests

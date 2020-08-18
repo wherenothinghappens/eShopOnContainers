@@ -12,7 +12,7 @@ source .env
 # docker stack deploy --compose-file ./docker-compose.yml -c ./docker-compose.override.yml eshop
 # docker stack deploy --compose-file ./docker-compose.env.yml -c ./docker-compose.override.env.yml eshop
 
-DOCKER_FILE_FROM_ENV=`docker-compose -f ./docker-compose.yml -f ./docker-compose.override.yml config`
+DOCKER_FILE_FROM_ENV=`docker-compose -f ./docker-compose.yml -f ./docker-compose.override.yml --log-level ERROR config`
 sleep 1
 echo "$DOCKER_FILE_FROM_ENV" > docker-compose.env.yml
 sleep 1

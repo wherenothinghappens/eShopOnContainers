@@ -28,13 +28,27 @@
                             
                             println "Searching for services..."
                             
-                            tests.each { test ->
-                                println "$test"
-                            }
+                            def stepsForParallel = [:]
 
                             tests.each { test ->
-                                sh "docker-compose $composeFiles -p test run $test"
+                                stepsForParallel["testing $test"] = {
+                                    node {
+                                        stage ("tests") {
+                                            sh "docker-compose $composeFiles -p test run $test"
+                                        }
+                                    }
+                                }
                             }
+
+                            parallel stepsForParallel 
+                            
+                            // tests.each { test ->
+                            //     println "$test"
+                            // }
+
+                            // tests.each { test ->
+                            //     sh "docker-compose $composeFiles -p test run $test"
+                            // }
                         }
 
                         sh "docker-compose $composeFiles -p test down -v --remove-orphans"

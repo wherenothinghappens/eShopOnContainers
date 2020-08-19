@@ -22,5 +22,4 @@ dotnet test \
 /p:CollectCoverage=true \
 /p:Exclude="[*.Tests]*"
 
-
 # command: sh -c "cd / && ./tests-entrypoint.sh"

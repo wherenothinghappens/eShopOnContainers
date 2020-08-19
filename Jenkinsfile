@@ -10,47 +10,35 @@
 
         stages {
 
-            stage('.sh scripts permission'){
-
-                agent any
-
-                steps{
-                    sh 'chmod +x -R ./deploy/jenkins/*'
-                }
-            }
-
             stage('Running Tests') {
                     
                 agent any
 
                 steps{
 
-                    dir('./src/') {
-                        
-                        script {
-                                        
-                            def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
+                    script {
+                                    
+                        def composeFiles = "-f ./src/docker-compose-tests.yml -f ./src/docker-compose-tests.override.yml";
 
-                            sh "docker-compose $composeFiles -p test down -v --remove-orphans"
+                        sh "docker-compose $composeFiles -p test down -v --remove-orphans"
 
-                            ["unit", "functional"].each{ type ->
-                                
-                                def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
-                                
-                                println "Searching for services..."
-                                
-                                tests.each { test ->
-                                    println "$test"
-                                }
-
-                                tests.each { test ->
-                                    sh "docker-compose $composeFiles -p test run $test"
-                                }
+                        ["unit", "functional"].each{ type ->
+                            
+                            def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
+                            
+                            println "Searching for services..."
+                            
+                            tests.each { test ->
+                                println "$test"
                             }
 
-                            sh "docker-compose $composeFiles -p test down -v --remove-orphans"
-                        }      
-                    }
+                            tests.each { test ->
+                                sh "docker-compose $composeFiles -p test run $test"
+                            }
+                        }
+
+                        sh "docker-compose $composeFiles -p test down -v --remove-orphans"
+                    }      
                 }
                 post {
 
@@ -122,60 +110,57 @@
                 }
             }
 
-            stage('Build') {
+            stage('Build Docker Images') {
 
                 agent any
 
-                when { buildingTag() }
-
                 steps {
 
-                    dir('./src/') {
-                        sh '../deploy/jenkins/deploy-envsubst.sh'
+                    script {
+
+                        def composeFiles = "-f ./src/docker-compose.yml -f ./src/docker-compose.override.yml";
+                        
+                        sh "docker-compose $composeFiles build"
                     }
                 }
             }
 
-            stage('Publish') {
+            stage('Publish Images to Registry') {
 
                 agent any
 
-                when { buildingTag() }
-
                 steps {
-                        
-                    sh  '''
 
-                        docker push ${REGISTRY}/webspa:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/locations.api:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/webmvc:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/webshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/ordering.signalrhub:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/mobileshoppingagg:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/marketing.api:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/basket.api:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/payment.api:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/catalog.api:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/identity.api:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/ordering.api:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/ordering.backgroundtasks:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/webhooks.client:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/webhooks.api:${PLATFORM:-linux}-${TAG:-latest}
-                        docker push ${REGISTRY}/webstatus:${PLATFORM:-linux}-${TAG:-latest}
-                    
-                    '''
-                        // docker push ${REGISTRY}/webmarketing.apigw:${PLATFORM:-linux}-${TAG:-latest}
-                        // docker push ${REGISTRY}/webshopping.apigw:${PLATFORM:-linux}-${TAG:-latest}
-                        // docker push ${REGISTRY}/mobilemarketing.apigw:${PLATFORM:-linux}-${TAG:-latest}
-                        // docker push ${REGISTRY}/mobileshopping.apigw:${PLATFORM:-linux}-${TAG:-latest}
+                    script {
+
+                        println "Searching for images..."
+
+                        def composeFiles = "-f ./src/docker-compose.yml -f ./src/docker-compose.override.yml";
+                        
+                        def images = sh(script: "docker-compose $composeFiles --log-level ERROR config | grep 'image: $REGISTRY' | awk '{print \$2}'", returnStdout: true).trim().split('\n')
+                        
+                        def stepsForParallel = [:]
+
+                        images.each { image ->
+                            stepsForParallel["pushing $image"] = {
+                                node {
+                                    stage ("tests") {
+                                        sh "docker push $image"
+                                    }
+                                }
+                            }
+                        }
+
+                        parallel stepsForParallel 
+                    }
                 }
             }
 
-            stage('Deploy') {
-
-                agent any
+            stage('Update Service Images') {
 
                 when { buildingTag() }
+
+                agent any
 
                 steps {
                         

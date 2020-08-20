@@ -2,6 +2,10 @@ version: '3.4'
 
 services:
   rabbitmq-test:
+    environment:
+      RABBITMQ_DEFAULT_USER: ${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      RABBITMQ_DEFAULT_PASS: ${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      # RABBITMQ_DEFAULT_VHOST: ${ESHOP_SERVICE_BUS_VHOST}
     ports:
       - "15672:15672"
       - "5672:5672"
@@ -49,8 +53,8 @@ services:
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
@@ -71,8 +75,8 @@ services:
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
@@ -92,8 +96,8 @@ services:
       - ConnectionString=${ESHOP_AZURE_CATALOG_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=Pass@word}
       - PicBaseUrl=${ESHOP_STORAGE_CATALOG_URL}
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureStorageAccountName=${ESHOP_AZURE_STORAGE_CATALOG_NAME}
       - AzureStorageAccountKey=${ESHOP_AZURE_STORAGE_CATALOG_KEY}
       - UseCustomizationData=True
@@ -116,8 +120,8 @@ services:
       - ConnectionString=${ESHOP_AZURE_CATALOG_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=Pass@word}
       - PicBaseUrl=${ESHOP_STORAGE_CATALOG_URL}
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureStorageAccountName=${ESHOP_AZURE_STORAGE_CATALOG_NAME}
       - AzureStorageAccountKey=${ESHOP_AZURE_STORAGE_CATALOG_KEY}
       - UseCustomizationData=True
@@ -141,8 +145,8 @@ services:
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - UseCustomizationData=True
       - AzureServiceBusEnabled=False
       - CheckUpdateTime=30000
@@ -165,8 +169,8 @@ services:
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - UseCustomizationData=True
       - AzureServiceBusEnabled=False
       - CheckUpdateTime=30000
@@ -189,8 +193,8 @@ services:
       - MongoConnectionString=${ESHOP_AZURE_COSMOSDB:-mongodb://nosql-data-test}
       - MongoDatabase=MarketingDb
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - CampaignDetailFunctionUri=${ESHOP_AZUREFUNC_CAMPAIGN_DETAILS_URI}
@@ -215,8 +219,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
@@ -232,8 +236,8 @@ services:
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}

@@ -1,0 +1,51 @@
+version: '3.4'
+
+services:
+  basket-api-functional-test:
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - ./tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  basket-api-unit-test:
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - ./tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  catalog-api-functional-test:
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - ./tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  catalog-api-unit-test:
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - ./tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  ordering-api-functional-test:
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - ./tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  ordering-api-unit-test:
+    volumes:
+      - ./tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+    entrypoint: sh -c "cd / && chmod +x -R ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+      
+  marketing-api-functional-test:
+    entrypoint: sh -c "cd / && chmod +x -R ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - ./tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  locations-api-functional-test:
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - ./tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests

@@ -42,8 +42,7 @@
                                 tests.each { test ->
                                     stepsForParallel["testing $test"] = {
                                         //EventBusConnection=rabbitmq-test:: In Production we use stack prefix "eshop_"...
-                                        //run -e EventBusConnection=rabbitmq-test
-                                        sh "docker-compose $composeFiles -p test run $test"
+                                        sh "docker-compose $composeFiles -p test run -e EventBusConnection=rabbitmq-test $test"
                                     }
                                 }
 

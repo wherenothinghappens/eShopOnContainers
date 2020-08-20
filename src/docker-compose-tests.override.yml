@@ -5,10 +5,6 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
-    environment:
-      RABBITMQ_DEFAULT_USER: ${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      RABBITMQ_DEFAULT_PASS: ${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
-      # RABBITMQ_DEFAULT_VHOST: ${ESHOP_SERVICE_BUS_VHOST}
 
   basket-data-test:
     ports:
@@ -46,64 +42,58 @@ services:
       - "5105:80"
 
   basket-api-functional-test:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Basket/Basket.FunctionalTests
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_REDIS_BASKET_DB:-basket-data-test}
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5103:80"
-    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
-    volumes:
-      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
-      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+    entrypoint:
+        - dotnet
+        - test
+        - --logger
+        - trx;LogFileName=/tests/basket-functional-test-results.xml
 
   basket-api-unit-test:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Basket/Basket.UnitTests
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_REDIS_BASKET_DB:-basket-data-test}
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5113:80"
-    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
-    volumes:
-      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
-      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+    entrypoint:
+        - dotnet
+        - test
+        - --logger
+        - trx;LogFileName=/tests/basket-unit-test-results.xml
 
   catalog-api-functional-test:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Catalog/Catalog.FunctionalTests  
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_CATALOG_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=Pass@word}
       - PicBaseUrl=${ESHOP_STORAGE_CATALOG_URL}
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - AzureStorageAccountName=${ESHOP_AZURE_STORAGE_CATALOG_NAME}
       - AzureStorageAccountKey=${ESHOP_AZURE_STORAGE_CATALOG_KEY}
       - UseCustomizationData=True
@@ -113,23 +103,21 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
     ports:
       - "5101:80"
-    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
-    volumes:
-      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
-      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+    entrypoint:
+        - dotnet
+        - test
+        - --logger
+        - trx;LogFileName=/tests/catalog-functional-test-results.xml
 
   catalog-api-unit-test:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Catalog/Catalog.UnitTests
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_CATALOG_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=Pass@word}
       - PicBaseUrl=${ESHOP_STORAGE_CATALOG_URL}
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - AzureStorageAccountName=${ESHOP_AZURE_STORAGE_CATALOG_NAME}
       - AzureStorageAccountKey=${ESHOP_AZURE_STORAGE_CATALOG_KEY}
       - UseCustomizationData=True
@@ -139,24 +127,22 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
     ports:
       - "5191:80"
-    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
-    volumes:
-      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
-      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+    entrypoint:
+        - dotnet
+        - test
+        - --logger
+        - trx;LogFileName=/tests/catalog-unit-test-results.xml
 
   ordering-api-functional-test:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Ordering/Ordering.FunctionalTests
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_ORDERING_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.OrderingDb;User Id=sa;Password=Pass@word}
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - UseCustomizationData=True
       - AzureServiceBusEnabled=False
       - CheckUpdateTime=30000
@@ -165,24 +151,22 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5102:80"
-    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
-    volumes:
-      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
-      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+    entrypoint:
+        - dotnet
+        - test
+        - --logger
+        - trx;LogFileName=/tests/ordering-functional-test-results.xml
 
   ordering-api-unit-test:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Ordering/Ordering.UnitTests
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_ORDERING_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.OrderingDb;User Id=sa;Password=Pass@word}
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - UseCustomizationData=True
       - AzureServiceBusEnabled=False
       - CheckUpdateTime=30000
@@ -191,24 +175,22 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5112:80"
-    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
-    volumes:
-      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
-      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
-      
+    entrypoint:
+        - dotnet
+        - test
+        - --logger
+        - trx;LogFileName=/tests/ordering-unit-test-results.xml
+
   marketing-api-functional-test:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Marketing/Marketing.FunctionalTests
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_MARKETING_DB:-Server=sql-data-test;Database=Microsoft.eShopOnContainers.Services.MarketingDb;User Id=sa;Password=Pass@word}
       - MongoConnectionString=${ESHOP_AZURE_COSMOSDB:-mongodb://nosql-data-test}
       - MongoDatabase=MarketingDb
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - CampaignDetailFunctionUri=${ESHOP_AZUREFUNC_CAMPAIGN_DETAILS_URI}
@@ -222,19 +204,19 @@ services:
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5110:80"
-    entrypoint: sh -c "cd / && chmod +x -R ./tests-entrypoint.sh && ./tests-entrypoint.sh"
-    volumes:
-      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
-      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+    entrypoint:
+        - dotnet
+        - test
+        - --logger
+        - trx;LogFileName=/tests/marketing-functional-test-results.xml
 
   payment-api-test:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
@@ -242,8 +224,6 @@ services:
       - "5108:80"
 
   locations-api-functional-test:
-    image: mcr.microsoft.com/dotnet/core/sdk:3.1
-    working_dir: /app/Services/Location/Locations.FunctionalTests
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
@@ -251,17 +231,17 @@ services:
       - Database=LocationsDb
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
-      - EventBusConnection=rabbitmq-test
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq-test}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
     ports:
       - "5109:80"
-    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
-    volumes:
-      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
-      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
-      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+    entrypoint:
+      - dotnet
+      - test
+      - --logger
+      - trx;LogFileName=/tests/locations-functional-test-results.xml

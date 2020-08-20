@@ -1,0 +1,80 @@
+version: '3.4'
+
+services:
+  rabbitmq-test:
+    environment:
+      RABBITMQ_DEFAULT_USER: ${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      RABBITMQ_DEFAULT_PASS: ${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      # RABBITMQ_DEFAULT_VHOST: ${ESHOP_SERVICE_BUS_VHOST}
+
+  basket-api-functional-test:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    working_dir: /app/Services/Basket/Basket.FunctionalTests
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  basket-api-unit-test:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    working_dir: /app/Services/Basket/Basket.UnitTests
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  catalog-api-functional-test:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    working_dir: /app/Services/Catalog/Catalog.FunctionalTests  
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  catalog-api-unit-test:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    working_dir: /app/Services/Catalog/Catalog.UnitTests
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  ordering-api-functional-test:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    working_dir: /app/Services/Ordering/Ordering.FunctionalTests
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  ordering-api-unit-test:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    working_dir: /app/Services/Ordering/Ordering.UnitTests
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+      
+  marketing-api-functional-test:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    working_dir: /app/Services/Marketing/Marketing.FunctionalTests
+    entrypoint: sh -c "cd / && chmod +x -R ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests
+
+  locations-api-functional-test:
+    image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    working_dir: /app/Services/Location/Locations.FunctionalTests
+    entrypoint: sh -c "cd / && chmod 755 ./tests-entrypoint.sh && ./tests-entrypoint.sh"
+    volumes:
+      - .:/app #TODO: Problem with basename (tests-entrypoint.sh)
+      - ../deploy/jenkins/tests-entrypoint.sh:/tests-entrypoint.sh
+      - ${BUILD_ARTIFACTSTAGINGDIRECTORY:-./tests-results/}:/tests

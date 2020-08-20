@@ -22,7 +22,7 @@
 
                         script {
                                         
-                            def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
+                            def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -f ./docker-compose-tests.override.jenkins.yml";
 
                             // Clean environment
                             sh "docker-compose $composeFiles -p test down -v --remove-orphans"

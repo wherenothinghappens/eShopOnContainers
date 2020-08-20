@@ -4,8 +4,8 @@
 
         environment {
             COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}"
-            REGISTRY = "proget.valterbarbosa.com.br/e-shop-on-containers"
-            SONARQUBE_URL = "http://sonarqube.valterbarbosa.com.br"
+            // REGISTRY = [“Manage Jenkins -> Configure System -> Global properties option”]
+            // SONARQUBE_URL = [“Manage Jenkins -> Configure System -> Global properties option”]
         }
 
         stages {
@@ -15,6 +15,8 @@
                 agent any
 
                 steps{
+
+                    echo sh(script: 'env|sort', returnStdout: true)
 
                     dir('./src/') {
 
@@ -70,7 +72,7 @@
                 agent {
                     dockerfile {
                         filename 'Dockerfile.SonarQube'
-                        args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock'
+                        args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock' //Coverlet hotfix (OPTION 1): -v ${WORKSPACE}:/app :: ISN'T WORKING (https://issues.jenkins-ci.org/browse/JENKINS-42369)
                     }
                 }
 
@@ -78,10 +80,10 @@
 
                     withCredentials([usernamePassword(credentialsId: 'SonarQube', passwordVariable: 'SONARQUBE_KEY', usernameVariable: 'DUMMY' )]) {
 
-                        script{
+                        //Coverlet hotfix (OPTION 2)
+                        //https://github.com/coverlet-coverage/coverlet/pull/828/commits/8ca6a5901ddfb527d4274518be76b468356b011e
+                        script {
 
-                            //Coverlet hotfix
-                            //https://github.com/coverlet-coverage/coverlet/pull/828/commits/8ca6a5901ddfb527d4274518be76b468356b011e
                             def CONTAINER_ROOT = "/app";
                             sh """
                                 sed -i 's#fullPath="$CONTAINER_ROOT#fullPath="$WORKSPACE/src#' */tests-results/*.coverage.xml

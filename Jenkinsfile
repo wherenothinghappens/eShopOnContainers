@@ -16,43 +16,34 @@
 
                 steps{
 
-                    script {
-                                    
-                        def composeFiles = "-f ./src/docker-compose-tests.yml -f ./src/docker-compose-tests.override.yml";
+                    dir('./src/') {
 
-                        sh "docker-compose $composeFiles -p test down -v --remove-orphans"
+                        script {
+                                        
+                            def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
-                        ["unit", "functional"].each{ type ->
-                            
-                            def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
-                            
-                            println "Searching for services..."
-                            
-                            def stepsForParallel = [:]
+                            sh "docker-compose $composeFiles -p test down -v --remove-orphans"
 
-                            tests.each { test ->
-                                stepsForParallel["testing $test"] = {
-                                    node {
-                                        stage ("tests") {
-                                            sh "docker-compose $composeFiles -p test run $test"
-                                        }
+                            ["unit", "functional"].each{ type ->
+                                
+                                def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
+                                
+                                println "Searching for services..."
+                                
+                                def stepsForParallel = [:]
+
+                                tests.each { test ->
+                                    stepsForParallel["testing $test"] = {
+                                        sh "docker-compose $composeFiles -p test run $test"
                                     }
                                 }
+
+                                parallel stepsForParallel 
                             }
 
-                            parallel stepsForParallel 
-                            
-                            // tests.each { test ->
-                            //     println "$test"
-                            // }
-
-                            // tests.each { test ->
-                            //     sh "docker-compose $composeFiles -p test run $test"
-                            // }
-                        }
-
-                        sh "docker-compose $composeFiles -p test down -v --remove-orphans"
-                    }      
+                            sh "docker-compose $composeFiles -p test down -v --remove-orphans"
+                        }      
+                    }
                 }
                 post {
 
@@ -129,12 +120,15 @@
                 agent any
 
                 steps {
+                    
+                    dir('./src/') {
 
-                    script {
+                        script {
 
-                        def composeFiles = "-f ./src/docker-compose.yml -f ./src/docker-compose.override.yml";
-                        
-                        sh "docker-compose $composeFiles build"
+                            def composeFiles = "-f ./docker-compose.yml -f ./docker-compose.override.yml";
+                            
+                            sh "docker-compose $composeFiles build"
+                        }
                     }
                 }
             }
@@ -145,27 +139,30 @@
 
                 steps {
 
-                    script {
+                    dir('./src/') {
 
-                        println "Searching for images..."
+                        script {
 
-                        def composeFiles = "-f ./src/docker-compose.yml -f ./src/docker-compose.override.yml";
-                        
-                        def images = sh(script: "docker-compose $composeFiles --log-level ERROR config | grep 'image: $REGISTRY' | awk '{print \$2}'", returnStdout: true).trim().split('\n')
-                        
-                        def stepsForParallel = [:]
+                            println "Searching for images..."
 
-                        images.each { image ->
-                            stepsForParallel["pushing $image"] = {
-                                node {
-                                    stage ("tests") {
-                                        sh "docker push $image"
+                            def composeFiles = "-f ./docker-compose.yml -f ./docker-compose.override.yml";
+                            
+                            def images = sh(script: "docker-compose $composeFiles --log-level ERROR config | grep 'image: $REGISTRY' | awk '{print \$2}'", returnStdout: true).trim().split('\n')
+                            
+                            def stepsForParallel = [:]
+
+                            images.each { image ->
+                                stepsForParallel["pushing $image"] = {
+                                    node {
+                                        stage ("tests") {
+                                            sh "docker push $image"
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        parallel stepsForParallel 
+                            parallel stepsForParallel 
+                        }
                     }
                 }
             }

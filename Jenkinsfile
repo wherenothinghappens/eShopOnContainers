@@ -41,6 +41,8 @@
 
                                 tests.each { test ->
                                     stepsForParallel["testing $test"] = {
+                                        //EventBusConnection=rabbitmq-test:: In Production we use stack prefix "eshop_"...
+                                        //run -e EventBusConnection=rabbitmq-test
                                         sh "docker-compose $composeFiles -p test run $test"
                                     }
                                 }
@@ -84,7 +86,7 @@
                         //https://github.com/coverlet-coverage/coverlet/pull/828/commits/8ca6a5901ddfb527d4274518be76b468356b011e
                         script {
 
-                            def CONTAINER_ROOT = "/app";
+                            def CONTAINER_ROOT = "/src";
                             sh """
                                 sed -i 's#fullPath="$CONTAINER_ROOT#fullPath="$WORKSPACE/src#' */tests-results/*.coverage.xml
                             """

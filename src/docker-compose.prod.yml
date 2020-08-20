@@ -91,7 +91,7 @@ services:
     ports:
       - "80"   # The API Gateway redirects and access through the internal port (80).
 
-  ordering.backgroundtasks:
+  ordering-backgroundtasks:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80

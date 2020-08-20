@@ -28,15 +28,40 @@ services:
     volumes:
       - eshop-nosqldata:/data/db
 
+  mongo-express:
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=${ESHOP_EXTERNAL_DNS_NAME_OR_IP}
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin   
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=guest
+      - ME_CONFIG_BASICAUTH_PASSWORD=guest
+    ports:
+      - "8082:8081"
+
   basketdata:
     ports:
       - "6379:6379"
     volumes:
       - eshop-basketdata:/data
+
+  redis-commander:
+    environment:
+    - REDIS_HOSTS=${ESHOP_EXTERNAL_DNS_NAME_OR_IP}
+    - REDIS_PORT=6379
+    ports:
+    - "8081:8081"
+
   rabbitmq:
+    volumes:
+      - mq_data:/var/lib/rabbitmq/mnesia
     ports:
       - "15672:15672"
       - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      RABBITMQ_DEFAULT_PASS: ${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
+      # RABBITMQ_DEFAULT_VHOST: ${ESHOP_SERVICE_BUS_VHOST}
 
   identity-api:
     environment:
@@ -57,6 +82,8 @@ services:
       - UseCustomizationData=True
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5105:80"
 
@@ -68,8 +95,8 @@ services:
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
@@ -77,6 +104,8 @@ services:
       - PATH_BASE=/basket-api
       - GRPC_PORT=81
       - PORT=80
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5103:80"
       - "9103:81"
@@ -87,8 +116,8 @@ services:
       - ConnectionString=${ESHOP_AZURE_CATALOG_DB:-Server=sqldata;Database=Microsoft.eShopOnContainers.Services.CatalogDb;User Id=sa;Password=Pass@word}
       - PicBaseUrl=${ESHOP_STORAGE_CATALOG_URL}
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureStorageAccountName=${ESHOP_AZURE_STORAGE_CATALOG_NAME}
       - AzureStorageAccountKey=${ESHOP_AZURE_STORAGE_CATALOG_KEY}
       - UseCustomizationData=True
@@ -99,6 +128,8 @@ services:
       - GRPC_PORT=81
       - PORT=80
       - PATH_BASE=/catalog-api
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5101:80"
       - "9101:81"
@@ -111,14 +142,15 @@ services:
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - UseCustomizationData=True
       - AzureServiceBusEnabled=False
       - CheckUpdateTime=30000
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
       - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
       - Serilog__MinimumLevel__Override__ordering-api=Verbose
       - PATH_BASE=/ordering-api
@@ -134,8 +166,8 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_ORDERING_DB:-Server=sqldata;Database=Microsoft.eShopOnContainers.Services.OrderingDb;User Id=sa;Password=Pass@word}
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - UseCustomizationData=True
       - AzureServiceBusEnabled=False
       - CheckUpdateTime=30000
@@ -144,6 +176,7 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
       - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5111:80"
 
@@ -155,8 +188,8 @@ services:
       - MongoConnectionString=${ESHOP_AZURE_COSMOSDB:-mongodb://nosqldata}
       - MongoDatabase=MarketingDb
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - CampaignDetailFunctionUri=${ESHOP_AZUREFUNC_CAMPAIGN_DETAILS_URI}
@@ -169,6 +202,8 @@ services:
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
       - PATH_BASE=/marketing-api
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5110:80"
 
@@ -177,13 +212,15 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - Serilog__MinimumLevel__Override__payment-api.IntegrationEvents.EventHandling=Verbose
       - Serilog__MinimumLevel__Override__Microsoft.eShopOnContainers.BuildingBlocks.EventBusRabbitMQ=Verbose
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5108:80"
 
@@ -196,13 +233,15 @@ services:
       - identityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
       - PATH_BASE=/locations-api
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5109:80"
 
@@ -212,10 +251,12 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - ConnectionString=${ESHOP_AZURE_WEBHOOKS_DB:-Server=sqldata;Database=Microsoft.eShopOnContainers.Services.WebhooksDb;User Id=sa;Password=Pass@word}
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - IdentityUrl=http://identity-api
       - IdentityUrlExternal=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5105
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5113:80"
 
@@ -294,12 +335,14 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:80
       - EventBusConnection=${ESHOP_AZURE_SERVICE_BUS:-rabbitmq}
-      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME}
-      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
+      - EventBusUserName=${ESHOP_SERVICE_BUS_USERNAME:-a4pEQTjbY8aKtNBGLKRdbd91Fpp}
+      - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD:-NzCNF1oJ6zQYqIKPM2E46LY$L54OP%sh}
       - AzureServiceBusEnabled=False
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - identityUrl=http://identity-api
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5112:80"
 
@@ -335,6 +378,8 @@ services:
       - HealthChecksUI__HealthChecks__12__Uri=http://ordering-backgroundtasks/hc
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5107:80"
 
@@ -350,6 +395,8 @@ services:
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - SignalrHubUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5202
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5104:80"
 
@@ -366,6 +413,8 @@ services:
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP}
     ports:
       - "5100:80"
 
@@ -377,6 +426,8 @@ services:
       - CallBackUrl=http://${ESHOP_EXTERNAL_DNS_NAME_OR_IP}:5114
       - WebhooksUrl=http://webhooks-api
       - SelfUrl=http://webhooks-client/
+      - Serilog__LogstashgUrl=${ESHOP_EXTERNAL_LOGSTASH_DNS_NAME_OR_IP} 
+      - Serilog__SeqServerUrl=${ESHOP_EXTERNAL_SEQSERVER_DNS_NAME_OR_IP} 
     ports:
       - "5114:80"
 volumes:
@@ -386,4 +437,4 @@ volumes:
     external: false
   eshop-basketdata:
     external: false
-
+  mq_data:

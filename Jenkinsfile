@@ -22,8 +22,13 @@
                                         
                             def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml";
 
+                            // Clean environment
                             sh "docker-compose $composeFiles -p test down -v --remove-orphans"
 
+                            // Up test infrastructure
+                            sh "docker-compose $composeFiles -p test up -d sql-data-test nosql-data-test basket-data-test rabbitmq-test identity-api-test payment-api-test"
+
+                            // Parallel tests
                             ["unit", "functional"].each{ type ->
                                 
                                 def tests = sh(script: "docker-compose $composeFiles --log-level ERROR config --services | grep $type", returnStdout: true).trim().split('\n')
@@ -76,15 +81,10 @@
                         script{
 
                             //Coverlet hotfix
-
                             //https://github.com/coverlet-coverage/coverlet/pull/828/commits/8ca6a5901ddfb527d4274518be76b468356b011e
-
                             def CONTAINER_ROOT = "/app";
-                            
                             sh """
-        
                                 sed -i 's#fullPath="$CONTAINER_ROOT#fullPath="$WORKSPACE/src#' */tests-results/*.coverage.xml
-
                             """
                         }
 
@@ -153,11 +153,7 @@
 
                             images.each { image ->
                                 stepsForParallel["pushing $image"] = {
-                                    node {
-                                        stage ("tests") {
-                                            sh "docker push $image"
-                                        }
-                                    }
+                                    sh "docker push $image"
                                 }
                             }
 

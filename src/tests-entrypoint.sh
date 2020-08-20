@@ -7,11 +7,11 @@ cd -
 # Get project name
 PROJECT_NAME="$(basename $(find . -wholename "*.csproj"))"
 
-echo "Installing Tools to $PROJECT_NAME"
-# dotnet tool install --global coverlet.console
-
-echo "Adding Package to $PROJECT_NAME"
-# dotnet add package coverlet.msbuild --version 2.9.0
+# Sonarqube .coverage.xml results
+if ! grep -q '"coverlet.msbuild" Version="2.9.0"' $PROJECT_NAME; then
+    echo "Adding [coverlet.msbuild 2.9.0] Package to $PROJECT_NAME"
+    dotnet add package coverlet.msbuild --version 2.9.0
+fi
 
 echo "Running Tests to $PROJECT_NAME"
 
@@ -21,5 +21,3 @@ dotnet test \
 /p:CoverletOutputFormat=opencover \
 /p:CollectCoverage=true \
 /p:Exclude="[*.Tests]*"
-
-# command: sh -c "cd / && ./tests-entrypoint.sh"

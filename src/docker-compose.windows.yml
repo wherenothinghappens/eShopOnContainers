@@ -11,7 +11,7 @@ services:
   nosqldata:
     image: mongo:windowsservercore
 
-  basket.data:
+  basketdata:
     image: redis:nanoserver
 
   rabbitmq:

@@ -29,6 +29,7 @@ services:
       - eshop-nosqldata:/data/db
 
   mongo-express:
+    image: mongo-express:latest
     environment:
       - ME_CONFIG_MONGODB_SERVER=${ESHOP_EXTERNAL_DNS_NAME_OR_IP}
       - ME_CONFIG_MONGODB_PORT=27017
@@ -38,6 +39,8 @@ services:
       - ME_CONFIG_BASICAUTH_PASSWORD=guest
     ports:
       - "8082:8081"
+    depends_on:
+      - nosqldata
 
   basketdata:
     ports:
@@ -46,11 +49,14 @@ services:
       - eshop-basketdata:/data
 
   redis-commander:
+    image: rediscommander/redis-commander:latest
     environment:
     - REDIS_HOSTS=${ESHOP_EXTERNAL_DNS_NAME_OR_IP}
     - REDIS_PORT=6379
     ports:
     - "8081:8081"
+    depends_on:
+      - basketdata
 
   rabbitmq:
     volumes:

@@ -21,8 +21,23 @@
                     dir('./src/') {
 
                         script {
-                                        
+
                             def composeFiles = "-f ./docker-compose-tests.yml -f ./docker-compose-tests.override.yml -f ./docker-compose-tests.override.jenkins.yml";
+
+                            // TODO: 
+                            println "Prevent any port conflicts. Need to open machine firewall at range 7000-7002..."
+
+                            sh """
+                                sed -i 's;"5433:1433";"1433";' ./docker-compose-tests.override.yml
+                                sed -i 's;"6379:6379";"6379";' ./docker-compose-tests.override.yml
+                                sed -i 's;"27017:27017";"27017";' ./docker-compose-tests.override.yml
+                                sed -i 's;"6379:6379";"6379";' ./docker-compose-tests.override.yml
+                                sed -i 's;"15672:15672";"15672";' ./docker-compose-tests.override.yml
+                                sed -i 's;"5672:5672";"5672";' ./docker-compose-tests.override.yml
+                                sed -i 's;5105;7000;' ./docker-compose-tests.override.yml
+                                sed -i 's;5120;7001;' ./docker-compose-tests.override.yml
+                                sed -i 's;5112;7002;' ./docker-compose-tests.override.yml
+                            """
 
                             // Clean environment
                             sh "docker-compose $composeFiles -p test down -v --remove-orphans"

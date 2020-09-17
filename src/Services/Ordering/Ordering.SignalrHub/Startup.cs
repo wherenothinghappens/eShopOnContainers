@@ -19,6 +19,7 @@ using Ordering.SignalrHub.IntegrationEvents.EventHandling;
 using Ordering.SignalrHub.IntegrationEvents.Events;
 using RabbitMQ.Client;
 using System;
+using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace Ordering.SignalrHub
@@ -150,7 +151,7 @@ namespace Ordering.SignalrHub
                 {
                     Predicate = r => r.Name.Contains("self")
                 });
-                endpoints.MapHub<NotificationsHub>("/hub/notificationhub", options => options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransports.All);
+                endpoints.MapHub<NotificationsHub>("/hub/notificationhub");
             });
 
             ConfigureEventBus(app);
@@ -185,6 +186,20 @@ namespace Ordering.SignalrHub
                 options.Authority = identityUrl;
                 options.RequireHttpsMetadata = false;
                 options.Audience = "orders.signalrhub";
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/hub/notificationhub")))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
         }
 
